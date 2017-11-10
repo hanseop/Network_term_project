@@ -1,5 +1,5 @@
 
-
+//hanseop's server
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -102,7 +102,7 @@ public class testServer {
             user[client_count] = name;
             ID[client_count] = out;
             client_count++;
-            System.out.println("ÇÑ¸í µé¾î¿Ô´Ù " + client_count);
+            System.out.println("í•œëª… ë“¤ì–´ì™”ë‹¤ " + client_count);
             info.put(name, out);
 
             if (client_count == max_client) {
@@ -180,7 +180,7 @@ public class testServer {
                names.remove(name);
                info.remove(name);
                client_count--;
-               System.out.println("ÇÑ¸í ³ª°¬´Ù " + client_count);
+               System.out.println("í•œëª… ë‚˜ê°”ë‹¤ " + client_count);
             }
             if (out != null) {
                writers.remove(out);
