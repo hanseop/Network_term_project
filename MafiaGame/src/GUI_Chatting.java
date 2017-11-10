@@ -1,4 +1,6 @@
-/*client_Ã¤ÆÃÃ¢°ú ÅõÇ¥ÆĞ³ÎGUI*/
+//hanjin's client
+
+/*client_ì±„íŒ…ì°½ê³¼ íˆ¬í‘œíŒ¨ë„GUI*/
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -26,22 +28,22 @@ public class GUI_Chatting {
         textField.setEditable(false);
         messageArea.setEditable(false);
        
-        frame.getContentPane().add(textField, "North"); //Ã¤ÆÃÃ¢Àº ¸Ç À­ÂÊ¿¡ ¹èÄ¡
-        frame.getContentPane().add(new JScrollPane(messageArea), "Center"); //½ºÅ©·ÑÀº Áß¾Ó¿¡ ¹èÄ¡
+        frame.getContentPane().add(textField, "North"); //ì±„íŒ…ì°½ì€ ë§¨ ìœ—ìª½ì— ë°°ì¹˜
+        frame.getContentPane().add(new JScrollPane(messageArea), "Center"); //ìŠ¤í¬ë¡¤ì€ ì¤‘ì•™ì— ë°°ì¹˜
         frame.getContentPane().add(new JScrollPane(messageArea), "Center"); 
-        frame.pack(); //ÀüÃ¼ Ã¤ÆÃÃ¢À» º¸¿©ÁÜ
+        frame.pack(); //ì „ì²´ ì±„íŒ…ì°½ì„ ë³´ì—¬ì¤Œ
 
         // Add Listeners
         textField.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                out.println(textField.getText()); //ÅØ½ºÆ®¿¡¼­ ÀÔ·Â¹ŞÀº ±Û ÇÁ¸°Æ® ÇÏ±â
+                out.println(textField.getText()); //í…ìŠ¤íŠ¸ì—ì„œ ì…ë ¥ë°›ì€ ê¸€ í”„ë¦°íŠ¸ í•˜ê¸°
                 textField.setText("");
             }
         });
     }
 
-/*¾î¶² ¼­¹ö¿¡ Á¢¼ÓÇÒ °ÍÀÎÁö ÀÔ·Â¹ŞÀ½*/
+/*ì–´ë–¤ ì„œë²„ì— ì ‘ì†í•  ê²ƒì¸ì§€ ì…ë ¥ë°›ìŒ*/
     private String getServerAddress() {
         return JOptionPane.showInputDialog(
             frame,
@@ -50,7 +52,7 @@ public class GUI_Chatting {
             JOptionPane.QUESTION_MESSAGE);
     }
 
-/*°ÔÀÓ¿¡¼­ »ç¿ëÇÒ ÀÌ¸§À» ÀÔ·Â¹ŞÀ½*/
+/*ê²Œì„ì—ì„œ ì‚¬ìš©í•  ì´ë¦„ì„ ì…ë ¥ë°›ìŒ*/
     private String getName() {
         return JOptionPane.showInputDialog(
             frame,
@@ -59,7 +61,7 @@ public class GUI_Chatting {
             JOptionPane.PLAIN_MESSAGE);
     }
 
-/*¼­¹öÁ¢¼Ó°ú ÀÌ¸§ÀÔ·ÂÃ¢À» ½ÇÇà*/
+/*ì„œë²„ì ‘ì†ê³¼ ì´ë¦„ì…ë ¥ì°½ì„ ì‹¤í–‰*/
     private void run() throws IOException {
 
         // Make connection and initialize streams
@@ -79,12 +81,12 @@ public class GUI_Chatting {
             } else if (line.startsWith("MESSAGE")) {
                 messageArea.append(line.substring(8) + "\n");
             }
-            //if(5ºĞÀÌ µÆ´Ù°í ¼­¹ö¿¡°Ô ¾Ë¸²À» ¹ŞÀ¸¸é)
+            //if(5ë¶„ì´ ëë‹¤ê³  ì„œë²„ì—ê²Œ ì•Œë¦¼ì„ ë°›ìœ¼ë©´)
             String candidate=null;
-            String[] selections={"user1","user2","user3","user4","user5","user6","user7"};//ÅõÇ¥¸¦ À§ÇØ À¯ÀúÀÌ¸§À» ´ã¾Æ³õÀ½. ¼­¹ö¿¡¼­ ¹Ş¾Æ¿Í¾ß ÇÔ.
-            candidate=(String) JOptionPane.showInputDialog(null, "5ºĞÀÌ Áö³µ½À´Ï´Ù. ´©±¸¸¦ Á¤Áö½ÃÅ°°Ú½À´Ï±î?", "vote", JOptionPane.QUESTION_MESSAGE,null,selections,"user1");
-            //null¿¡´Â ÀÌ ÆË¾÷À» ¶ç¿ï paneÀÇ ÀÌ¸§À» Àû´Â´Ù.
-            //return candidate(); ->¼­¹ö¿¡°Ô candidate¸¦ ¸®ÅÏÇÔ.
+            String[] selections={"user1","user2","user3","user4","user5","user6","user7"};//íˆ¬í‘œë¥¼ ìœ„í•´ ìœ ì €ì´ë¦„ì„ ë‹´ì•„ë†“ìŒ. ì„œë²„ì—ì„œ ë°›ì•„ì™€ì•¼ í•¨.
+            candidate=(String) JOptionPane.showInputDialog(null, "5ë¶„ì´ ì§€ë‚¬ìŠµë‹ˆë‹¤. ëˆ„êµ¬ë¥¼ ì •ì§€ì‹œí‚¤ê² ìŠµë‹ˆê¹Œ?", "vote", JOptionPane.QUESTION_MESSAGE,null,selections,"user1");
+            //nullì—ëŠ” ì´ íŒì—…ì„ ë„ìš¸ paneì˜ ì´ë¦„ì„ ì ëŠ”ë‹¤.
+            //return candidate(); ->ì„œë²„ì—ê²Œ candidateë¥¼ ë¦¬í„´í•¨.
         }
        
      
@@ -92,9 +94,9 @@ public class GUI_Chatting {
 
 	public static void main(String[] args) throws Exception {
 		GUI_Chatting client = new GUI_Chatting();
-        client.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //³ª°¡±â ¹öÆ°À» ´©¸£¸é ³ª°¨
-        client.frame.setVisible(true); //Ã¤ÆÃÃ¢À» º¸¿©ÁÜ
-        client.run(); //¼­¹öÁ¢¼Ó, ÀÌ¸§ÀÔ·Â Ã¢À» ¶ç¿ò
+        client.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //ë‚˜ê°€ê¸° ë²„íŠ¼ì„ ëˆ„ë¥´ë©´ ë‚˜ê°
+        client.frame.setVisible(true); //ì±„íŒ…ì°½ì„ ë³´ì—¬ì¤Œ
+        client.run(); //ì„œë²„ì ‘ì†, ì´ë¦„ì…ë ¥ ì°½ì„ ë„ì›€
 
 	}
 
