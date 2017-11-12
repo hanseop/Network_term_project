@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
-
+/*랜덤직업배정과 유저접속여부*/
 public class testServer {
    private static final int PORT = 9001;
    private static HashSet<String> names = new HashSet<String>();
