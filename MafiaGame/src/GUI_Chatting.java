@@ -88,7 +88,7 @@ public class GUI_Chatting {
     }
     public String vote (String[] users){
     	String candidate=null;
-        String[] selections={"user1","user2","user3","user4","user5","user6","user7"};//투표를 위해 유저이름을 담아놓음. 서버에서 받아와야 함.
+        String[] selections=users;//투표를 위해 유저이름을 담아놓음. 서버에서 받아와야 함.
         candidate=(String) JOptionPane.showInputDialog(null, "5분이 지났습니다. 누구를 정지시키겠습니까?", "vote", JOptionPane.QUESTION_MESSAGE,null,selections,"user1");
         //null에는 이 팝업을 띄울 pane의 이름을 적는다.
         return candidate; //->서버에게 candidate를 리턴함.
