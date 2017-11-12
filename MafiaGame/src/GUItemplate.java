@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 
-
+/*마피아추론을위한단서창GUI*/
 public class GUItemplate {
    JFrame frame = new JFrame("objectMessage");
    JFrame myMainWindow = new JFrame("Who is Mafia?");
