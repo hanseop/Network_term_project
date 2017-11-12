@@ -62,7 +62,7 @@ public class GUI_Chatting {
     }
 
 /*서버접속과 이름입력창을 실행*/
-    private void run() throws IOException {
+    private void run(String[] players) throws IOException {
 
         // Make connection and initialize streams
         String serverAddress = getServerAddress();
@@ -82,7 +82,7 @@ public class GUI_Chatting {
                 messageArea.append(line.substring(8) + "\n");
             }
             //if(5분이 됐다고 서버에게 알림을 받으면)
-            //	vote(selections); -> selections는 유저이름이 담긴 스트링 배열
+            //	vote(players); -> players는 유저이름이 담긴 스트링 배열
             
         }
     }
@@ -99,7 +99,7 @@ public class GUI_Chatting {
 		GUI_Chatting client = new GUI_Chatting();
         client.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //나가기 버튼을 누르면 나감
         client.frame.setVisible(true); //채팅창을 보여줌
-        client.run(); //서버접속, 이름입력 창을 띄움
+        client.run(players); //서버접속, 이름입력 창을 띄움-->player정보를서버로부터받아와야함	
 
 	}
 
