@@ -106,12 +106,9 @@ public class RoomGUI {
 	            } else
 	            	messageArea.append(line + "\n");
 	            
-	       }
-	        
-	        
+	       }   
 	    }
-
-	
+	    
 	public static void main(String args[]) throws Exception
 	{
 		RoomGUI start = new RoomGUI();
@@ -121,7 +118,6 @@ public class RoomGUI {
 		ImageIcon picture = new ImageIcon("object.png");
 		start.setObject(key);
 		start.setObject(picture);
-		System.out.println();
 		
 	}
 }
