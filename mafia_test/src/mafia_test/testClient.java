@@ -117,5 +117,6 @@ public class testClient {
 		client.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		client.frame.setVisible(true);
 		client.run();
+		System.exit(0);
 	}
 }
