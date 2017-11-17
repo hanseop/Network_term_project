@@ -172,9 +172,8 @@ public class testServer {
 						PrintWriter receiver = info.get(kickedUser);
 
 						if (count != 0) {
-							for (PrintWriter writer : writers) {
-								writer.println("MESSAGE " + kickedUser + " is kicked");
-							}
+							sender.println("MESSAGE " + kickedUser + " is kicked");
+							receiver.println("MESSAGE " + "you were kicked from this game by " + name);
 							receiver.println("KICKED");
 							gaming[temp_index] = 0;
 
