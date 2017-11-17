@@ -1,5 +1,4 @@
 /*opening*/
-package net_hw2;
 import net_hw2.GUItemplate;
 
 import java.awt.*;
@@ -58,10 +57,6 @@ public class Layout extends JFrame {
 				chat.run(null, 1);
 			  	frm.setVisible(false);
 			  	gui.runGUI();
-			    ImageIcon key = new ImageIcon("key.png");
-			    ImageIcon picture = new ImageIcon("object.png");
-			    gui.setObject(key);
-			    gui.setObject(picture);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
