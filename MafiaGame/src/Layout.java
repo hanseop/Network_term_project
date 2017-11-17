@@ -1,3 +1,4 @@
+/*opening*/
 package net_hw2;
 import net_hw2.GUItemplate;
 
@@ -14,13 +15,12 @@ import java.net.UnknownHostException;
 import javax.swing.*;
 import java.util.*;
 public class Layout extends JFrame {
-	BufferedReader in;
-	PrintWriter out;
 	JTextField textField = new JTextField(80);
 	JTextArea messageArea = new JTextArea(16, 80);
 	Container frm;
-	GUItemplate gui = new GUItemplate();
+	RoomGUI gui = new RoomGUI();
 	JFrame frame = new JFrame();
+	Send_socket chat = new Send_socket();
 	
 	 public Layout() {
 	  setTitle("who is the MAFIA");
@@ -40,7 +40,7 @@ public class Layout extends JFrame {
 	  JLabel btt_L = new JLabel();
 	  JButton strt_btt = new JButton(start_btt);
 	  strt_btt.setRolloverIcon(start_btt_p);
-	  strt_btt.setPressedIcon(start_btt_p);//≥÷æÓµµ µ«∞Ì æ» ≥÷æÓµµ µ 
+	  strt_btt.setPressedIcon(start_btt_p);//ÎÑ£Ïñ¥ÎèÑ ÎêòÍ≥† Ïïà ÎÑ£Ïñ¥ÎèÑ Îê®
 	  strt_btt.setSize(150,90);
 	  strt_btt.setBorderPainted(false);
 	  strt_btt.setBounds(535, 455, 150, 90);
@@ -51,53 +51,25 @@ public class Layout extends JFrame {
 	  frm.setSize(1200, 900);
 	  frm.setVisible(true);
 	 }	
-	 
-	  private String getServerAddress(){
-	      return JOptionPane.showInputDialog(
-	          frame,
-	          "Enter IP Address of the Server:",
-	          "Who is the mafia",
-	          JOptionPane.PLAIN_MESSAGE);
-	  }
 	  
-	  /*∞‘¿”ø°º≠ ªÁøÎ«“ ¿Ã∏ß¿ª ¿‘∑¬πﬁ¿Ω*/
-	  private String getsName(){
-	      return JOptionPane.showInputDialog(
-	          frame,
-	          "Choose a User's ninkname:",
-	          "Who is the mafia",
-	          JOptionPane.PLAIN_MESSAGE);
-	  }
-	  
-	  private void run(String[] players) throws IOException {
-	      // Make connection and initialize streams
-		  String serverAddress = new String(getServerAddress());
-	      Socket socket = new Socket(serverAddress, 9001);
-	      in = new BufferedReader(new InputStreamReader(
-	          socket.getInputStream()));
-	      out = new PrintWriter(socket.getOutputStream(), true);
-
-	      String line = in.readLine();
-          if (line.startsWith("SUBMITNAME")) {
-              out.println(getsName());
-          }
-    	  frm.setVisible(false);
-    	  gui.runGUI();
-	  }
 	  private class press_start implements ActionListener{ 
 		    public void actionPerformed(ActionEvent event){
 		     try {
-				run(null);
+				chat.run(null, 1);
+			  	frm.setVisible(false);
+			  	gui.runGUI();
+			    ImageIcon key = new ImageIcon("key.png");
+			    ImageIcon picture = new ImageIcon("object.png");
+			    gui.setObject(key);
+			    gui.setObject(picture);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	 }
-}
-
+	  }		   
 public static void main(String[] args) {
 	Layout client = new Layout();
 	client.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 }
 }
-	
