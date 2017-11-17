@@ -15,6 +15,9 @@ public class testServer {
 	private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
 	private static HashMap<String, PrintWriter> info = new HashMap<String, PrintWriter>();
 
+	/********************************************
+	 * newly added variable
+	 *********************************************************************/
 	private static int max_client = 7;
 	private static int client_count = 0;
 	private static int[] gaming = new int[max_client];
@@ -23,11 +26,16 @@ public class testServer {
 	private static String[] job = new String[max_client];
 	private static String[] temp_job = { "mafia i'm mafia", "doctor i'm doctor", "police i'm police",
 			"citizen i'm citizen", "citizen i'm citizen", "citizen i'm citizen", "citizen i'm citizen" };
-
 	private static int[] random = { -1, -1, -1, -1, -1, -1, -1 };
 
-	private static void initialize(String[] user, PrintWriter[] ID, int[] gaming) {
+	/*****************************************************************************************************************/
+
+	/********************************************
+	 * newly added function
+	 *********************************************************************/
+	private static void initialize(String job[], String[] user, PrintWriter[] ID, int[] gaming) {
 		for (int i = 0; i < max_client; i++) {
+			job[i] = "not yet decided";
 			user[i] = "";
 			ID[i] = null;
 			gaming[i] = 0;
@@ -52,10 +60,91 @@ public class testServer {
 		}
 	}
 
+	private static void whisper(String input, String name) {
+		String whisper;
+		whisper = input.substring(1, input.indexOf("/>"));
+		if (names.contains(whisper)) {
+			PrintWriter sender = info.get(name);
+			PrintWriter receiver = info.get(whisper);
+			receiver.println("MESSAGE " + "<whisper from " + name + "> : " + input.substring(whisper.length() + 3));
+			sender.println("MESSAGE " + "<whisper to " + whisper + "> : " + input.substring(whisper.length() + 3));
+		} else {
+			PrintWriter sender = info.get(name);
+			sender.println("MESSAGE " + "This user does not exist.");
+		}
+	}
+
+	private static void showJob(String name) {
+		int temp_index = 0;
+		for (int i = 0; i < client_count; i++) {
+			if (name == user[i])
+				temp_index = i;
+		}
+		PrintWriter sender = info.get(name);
+		sender.println("MESSAGE " + "your job is " + job[temp_index].substring(0, job[temp_index].indexOf(" ")));
+	}
+
+	private static void showRole(String name) {
+		int temp_index = 0;
+		for (int i = 0; i < client_count; i++) {
+			if (name == user[i])
+				temp_index = i;
+		}
+		PrintWriter sender = info.get(name);
+		sender.println("MESSAGE " + "your role is " + job[temp_index].substring(job[temp_index].indexOf(" ")));
+	}
+
+	private static void kick(String input, String name) {
+		String kickedUser = input.substring(6);
+		int temp_index = 0;
+		int count = 0;
+		for (int i = 0; i < user.length; i++) {
+			if (kickedUser.equals(user[i])) {
+				count++;
+				temp_index = i;
+			}
+		}
+		PrintWriter sender = info.get(name);
+		PrintWriter receiver = info.get(kickedUser);
+
+		if (count != 0) {
+			sender.println("MESSAGE " + kickedUser + " is kicked");
+			receiver.println("MESSAGE " + "you were kicked from this game by " + name);
+			receiver.println("KICKED");
+			gaming[temp_index] = 0;
+
+		} else
+			sender.println("MESSAGE " + kickedUser + " is not exist");
+	}
+
+	private static void broadcast(String input, String name) {
+		for (PrintWriter writer : writers) {
+			writer.println("MESSAGE " + name + ": " + input);
+		}
+	}
+
+	private static void setJobRandomly(String[] job) {
+		if (client_count == max_client) {
+			randomArray(random);
+			for (int i = 0; i < max_client; i++)
+				System.out.println(random[i]);
+			for (PrintWriter writer : writers) {
+				writer.println("MESSAGE " + "game start");
+			}
+			for (int i = 0; i < max_client; i++)
+				job[i] = temp_job[random[i]];
+			for (int i = 0; i < max_client; i++) {
+
+				System.out.println("random " + job[i]);
+			}
+		}
+	}
+
+	/*****************************************************************************************************************/
 	public static void main(String[] args) throws Exception {
 		System.out.println("The chat server is running.");
 		ServerSocket listener = new ServerSocket(PORT);
-		initialize(user, ID, gaming);
+		initialize(job, user, ID, gaming);
 		try {
 			while (true) {
 				new Handler(listener.accept()).start();
@@ -98,6 +187,9 @@ public class testServer {
 					}
 				}
 				out.println("NAMEACCEPTED");
+				/**********************************************
+				 * newly added code
+				 *******************************************************************/
 				writers.add(out);
 				user[client_count] = name;
 				ID[client_count] = out;
@@ -106,91 +198,30 @@ public class testServer {
 				System.out.println("한명 들어왔다 " + client_count);
 				info.put(name, out);
 
-				if (client_count == max_client) {
-					randomArray(random);
-					for (int i = 0; i < max_client; i++)
-						System.out.println(random[i]);
-					for (PrintWriter writer : writers) {
-						writer.println("MESSAGE " + "game start");
-					}
-					for (int i = 0; i < max_client; i++)
-						job[i] = temp_job[random[i]];
-					for (int i = 0; i < max_client; i++) {
+				setJobRandomly(job);
 
-						System.out.println("random " + job[i]);
-					}
-				}
-
+				/*****************************************************************************************************************/
 				while (true) {
 					String input = in.readLine();
 					if (input == null) {
 						return;
 					} else if (input.startsWith("<") && input.indexOf("/>") != -1) {
-						String whisper;
-						whisper = input.substring(1, input.indexOf("/>"));
-						if (names.contains(whisper)) {
-							PrintWriter sender = info.get(name);
-							PrintWriter receiver = info.get(whisper);
-							receiver.println("MESSAGE " + "<whisper from " + name + "> : "
-									+ input.substring(whisper.length() + 3));
-							sender.println("MESSAGE " + "<whisper to " + whisper + "> : "
-									+ input.substring(whisper.length() + 3));
-						} else {
-							PrintWriter sender = info.get(name);
-							sender.println("MESSAGE " + "This user does not exist.");
-						}
-
+						whisper(input, name);
 					} else if (input.startsWith("/") && input.indexOf("job") != -1) {
-						int temp_index = 0;
-						for (int i = 0; i < client_count; i++) {
-							if (name == user[i])
-								temp_index = i;
-						}
-						PrintWriter sender = info.get(name);
-						sender.println("MESSAGE " + "your job is "
-								+ job[temp_index].substring(0, job[temp_index].indexOf(" ")));
+						showJob(name);
 					} else if (input.startsWith("/") && input.indexOf("role") != -1) {
-						int temp_index = 0;
-						for (int i = 0; i < client_count; i++) {
-							if (name == user[i])
-								temp_index = i;
-						}
-						PrintWriter sender = info.get(name);
-						sender.println(
-								"MESSAGE " + "your role is " + job[temp_index].substring(job[temp_index].indexOf(" ")));
+						showRole(name);
 					} else if (input.startsWith("/") && input.indexOf("kick") != -1) {
-						String kickedUser = input.substring(6);
-						int temp_index = 0;
-						int count = 0;
-						for (int i = 0; i < user.length; i++) {
-							if (kickedUser.equals(user[i])) {
-								count++;
-								temp_index = i;
-							}
-						}
-						PrintWriter sender = info.get(name);
-						PrintWriter receiver = info.get(kickedUser);
-
-						if (count != 0) {
-							sender.println("MESSAGE " + kickedUser + " is kicked");
-							receiver.println("MESSAGE " + "you were kicked from this game by " + name);
-							receiver.println("KICKED");
-							gaming[temp_index] = 0;
-
-						} else
-							sender.println("MESSAGE " + kickedUser + " is not exist");
-					}
-
-					else {
-						for (PrintWriter writer : writers) {
-							writer.println("MESSAGE " + name + ": " + input);
-						}
+						kick(input, name);
+					} else {
+						broadcast(input, name);
 					}
 				}
 			} catch (IOException e) {
 				System.out.println(e);
 			} finally {
 				if (name != null) {
+					/************************************************************/
 					for (PrintWriter writer : writers) {
 						writer.println("MESSAGE " + "[" + name + "] exit");
 					}
@@ -198,6 +229,7 @@ public class testServer {
 					info.remove(name);
 					client_count--;
 					System.out.println("한명 나갔다 " + client_count);
+					/************************************************************/
 				}
 				if (out != null) {
 					writers.remove(out);
