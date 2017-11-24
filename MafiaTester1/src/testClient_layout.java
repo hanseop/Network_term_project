@@ -1,5 +1,5 @@
 /*opening*/
-/*±âÁ¸ÀÇ Layout class*/
+/*ê¸°ì¡´ì˜ Layout class*/
 import net_hw2.GUItemplate;
 
 import java.awt.*;
@@ -14,14 +14,14 @@ import java.net.UnknownHostException;
 
 import javax.swing.*;
 import java.util.*;
-/*Å¬·¡½ºÀÌ¸§ÀÌ º¯°æµÇ¾úÀ¸¹Ç·Î Å¬·¡½º ºÒ·¯¿À´Â ÄÚµå ²À! ¼öÁ¤ÇØ¾ßÇÔ.*/
+/*í´ë˜ìŠ¤ì´ë¦„ì´ ë³€ê²½ë˜ì—ˆìœ¼ë¯€ë¡œ í´ë˜ìŠ¤ ë¶ˆëŸ¬ì˜¤ëŠ” ì½”ë“œ ê¼­! ìˆ˜ì •í•´ì•¼í•¨.*/
 public class testClient_layout extends JFrame {
 	JTextField textField = new JTextField(80);
 	JTextArea messageArea = new JTextArea(16, 80);
 	Container frm;
-	RoomGUI gui = new RoomGUI();
+	RoomGUI gui = new RoomGUI(); //testClient_room ë³€ê²½ë˜ì—ˆìŒ
 	JFrame frame = new JFrame();
-	Send_socket chat = new Send_socket();
+	Send_socket chat = new Send_socket(); //testClient_sendSocket ë³€ê²½ë˜ì—ˆìŒ
 	
 	 public testClient_layout() {
 	  setTitle("who is the MAFIA");
@@ -41,7 +41,7 @@ public class testClient_layout extends JFrame {
 	  JLabel btt_L = new JLabel();
 	  JButton strt_btt = new JButton(start_btt);
 	  strt_btt.setRolloverIcon(start_btt_p);
-	  strt_btt.setPressedIcon(start_btt_p);//³Ö¾îµµ µÇ°í ¾È ³Ö¾îµµ µÊ
+	  strt_btt.setPressedIcon(start_btt_p);//ë„£ì–´ë„ ë˜ê³  ì•ˆ ë„£ì–´ë„ ë¨
 	  strt_btt.setSize(150,90);
 	  strt_btt.setBorderPainted(false);
 	  strt_btt.setBounds(535, 455, 150, 90);
