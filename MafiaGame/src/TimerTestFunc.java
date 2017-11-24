@@ -1,15 +1,17 @@
 import java.util.Timer;
 import java.util.TimerTask;
+import java.awt.Toolkit;
 
 public class TimerTestFunc {
     
 	public static void main(String[] args){
 		Timer m_timer=new Timer();
 		TimerTask m_task=new TimerTask(){
-			public void run(){ //½ºÄÉÁÙ ¼³Á¤ÇÑ ½Ã°£ µÚ¿¡ ½ÇÇà ÇÒ ºÎºĞ
-				System.out.println("Morph");
+			public void run(){ //ìŠ¤ì¼€ì¤„ ì„¤ì •í•œ ì‹œê°„ ë’¤ì— ì‹¤í–‰ í•  ë¶€ë¶„
+				Toolkit.getDefaultToolkit().beep(); //ì•ŒëŒ, beep
+				// vote();
 			}
 		};
-		m_timer.schedule(m_task,5000); //5ÃÊ·Î ÀÓÀÇ ¼³Á¤µÈ »óÅÂ
+		m_timer.schedule(m_task,5000); //5ì´ˆë¡œ ì„ì˜ ì„¤ì •ëœ ìƒíƒœ
 	}
 }
