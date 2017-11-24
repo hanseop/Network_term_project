@@ -14,8 +14,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
-public class GUI_Chatting {
+public class GUI_Chatting{
 
     BufferedReader in;
     PrintWriter out;
@@ -62,7 +63,8 @@ public class GUI_Chatting {
     }
 
 /*서버접속과 이름입력창을 실행*/
-    private void run(String[] players) throws IOException {
+   // private void run(String[] players) throws IOException {
+    private void run() throws IOException {
 
         // Make connection and initialize streams
         String serverAddress = getServerAddress();
@@ -70,7 +72,8 @@ public class GUI_Chatting {
         in = new BufferedReader(new InputStreamReader(
             socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
-
+        
+        int count=0;
         // Process all messages from server, according to the protocol.
         while (true) {
             String line = in.readLine();
@@ -81,26 +84,38 @@ public class GUI_Chatting {
             } else if (line.startsWith("MESSAGE")) {
                 messageArea.append(line.substring(8) + "\n");
             }
-            //if(5분이 됐다고 서버에게 알림을 받으면)
-            //	vote(players); -> players는 유저이름이 담긴 스트링 배열
-            
+            //if(서버가 5분이 되었다고 알려주면)
+            	
+            	//out.println("vote"+vote(players)); //-> players는 유저이름이 담긴 스트링 배열
+           if(count==0){//테스트를 위해 돌아가는 부분
+            out.println("vote "+vote());
+           }
+           count++;
+            //System.out.println("vote "+vote());
         }
     }
-    public String vote (String[] users){
+    /*public String vote (String[] users){
     	String candidate=null;
         String[] selections=users;//투표를 위해 유저이름을 담아놓음. 서버에서 받아와야 함.
         candidate=(String) JOptionPane.showInputDialog(null, "5분이 지났습니다. 누구를 정지시키겠습니까?", "vote", JOptionPane.QUESTION_MESSAGE,null,selections,"user1");
         //null에는 이 팝업을 띄울 pane의 이름을 적는다.
         return candidate; //->서버에게 candidate를 리턴함.
-    	
-    }
+    }*/
+    public String vote (){ //테스트용
+    	String candidate=null;
+        String[] selections={"a","b","c"};//투표를 위해 유저이름을 담아놓음. 서버에서 받아와야 함.
+        candidate=(String) JOptionPane.showInputDialog(null, "5분이 지났습니다. 누구를 정지시키겠습니까?", "vote", JOptionPane.QUESTION_MESSAGE,null,selections,"user1");
+        //null에는 이 팝업을 띄울 pane의 이름을 적는다.
+        return candidate; //->서버에게 candidate를 리턴함.
+    } 
 
 	public static void main(String[] args) throws Exception {
 		GUI_Chatting client = new GUI_Chatting();
         client.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //나가기 버튼을 누르면 나감
         client.frame.setVisible(true); //채팅창을 보여줌
-        client.run(players); //서버접속, 이름입력 창을 띄움-->player정보를서버로부터받아와야함	
-
+        //client.run(players); //서버접속, 이름입력 창을 띄움-->player정보를서버로부터받아와야함	
+        
+        client.run();
 	}
 
 }
