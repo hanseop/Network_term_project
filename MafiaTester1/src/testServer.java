@@ -51,6 +51,8 @@ public class testServer {
 	private static int mafia_index = 9999;
 	private static int police_index = 9999;
 	private static int doctor_index = 9999;
+	private static int victim_index = 9999;
+	private static int[] selectedByMafia = new int[max_client];
 	private static int[] kicked = new int[max_client];
 	private static int[] vote = new int[max_client];
 	/**************************************************************/
@@ -67,6 +69,7 @@ public class testServer {
 		for (int i = 0; i < max_client; i++) {
 			/**************************** modified *******************************/
 			kicked[i] = 1;
+			selectedByMafia[i] = 0;
 			/**************************************************************/
 			vote[i] = 0;
 			user[i] = "null";
@@ -322,21 +325,54 @@ public class testServer {
 						}
 					} else if (input.startsWith("/") && input.indexOf("dead") != -1) {
 						PrintWriter mafia = info.get(name);
+						PrintWriter doctor = info.get(user[doctor_index]);
 						String selected = input.substring(5);
 						PrintWriter dead = info.get(selected);
-						int temp_index = 0;
 						for (int i = 0; i < max_client; i++) {
 							if (user[i].equals(selected) && kicked[i] != 0)
+								victim_index = i;
+						}
+						selectedByMafia[victim_index] = 1;
+
+						String temp = null;
+						for (int i = 0; i < max_client; i++) {
+							if (kicked[i] != 0) {
+								if (temp == null) {
+									temp = user[i];
+								} else {
+									temp += ("," + user[i]);
+								}
+							}
+						}
+
+						doctor.println("DOCTOR" + temp);
+					} else if (input.startsWith("/") && input.indexOf("protect") != -1) {
+						PrintWriter mafia = info.get(user[mafia_index]);
+						PrintWriter dead = info.get(user[victim_index]);
+						int temp_index = 9999;
+						String protect = input.substring(8);
+
+						for (int i = 0; i < max_client; i++) {
+							if (protect.equals(user[i]))
 								temp_index = i;
 						}
-						mafia.println("DEAD" + user[temp_index] + " dead");
-						dead.println("KICKED");
-						for (PrintWriter writer : writers) {
-							writer.println("MESSAGE " + user[temp_index] + " was "
-									+ job[temp_index].substring(0, job[temp_index].indexOf(" ")));
+
+						selectedByMafia[temp_index] = 0;
+
+						if (selectedByMafia[victim_index] == 1) {
+							mafia.println("DEAD" + user[victim_index] + " dead");
+							dead.println("KICKED");
+							for (PrintWriter writer : writers) {
+								writer.println("MESSAGE " + user[victim_index] + " dead, he was "
+										+ job[victim_index].substring(0, job[victim_index].indexOf(" ")));
+							}
+							kicked[victim_index] = 0;
+							current_client--;
+						} else {
+							for (PrintWriter writer : writers) {
+								writer.println("MESSAGE " + "Doctor saved victim");
+							}
 						}
-						kicked[temp_index] = 0;
-						current_client--;
 					} else if (input.startsWith("/") && input.indexOf("police") != -1) {
 						PrintWriter police = info.get(name);
 						String temp = null;
@@ -401,8 +437,8 @@ public class testServer {
 							PrintWriter victim = info.get(user[temp_index]);
 							victim.println("KICKED");
 							for (PrintWriter writer : writers) {
-								writer.println("MESSAGE " + user[temp_index] + " was "
-										+ job[temp_index].substring(0, job[temp_index].indexOf(" ")));
+								writer.println("MESSAGE " + user[victim_index] + " dead, he was "
+										+ job[victim_index].substring(0, job[victim_index].indexOf(" ")));
 							}
 							kicked[temp_index] = 0;
 							current_client--;
@@ -434,9 +470,9 @@ public class testServer {
 				System.out.println(e);
 			} finally { // if client is out, alert.
 				if (name != null) {
-					for (PrintWriter writer : writers) {
-						writer.println("MESSAGE " + "[" + name + "] exit");
-					}
+					// for (PrintWriter writer : writers) {
+					// writer.println("MESSAGE " + "[" + name + "] exit");
+					// }
 					names.remove(name);
 					info.remove(name);
 					client_count--;
