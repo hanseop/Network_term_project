@@ -1,5 +1,7 @@
 
-/*±âÁ¸ÀÇ Send_socket Å¬·¡½º*/
+/*ê¸°ì¡´ì˜ Send_socket í´ë˜ìŠ¤*/
+
+package mafia_test;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,51 +15,75 @@ import java.net.UnknownHostException;
 import javax.swing.*;
 import java.util.*;
 
-public class testClient_sendSocket {
-	BufferedReader in;
-	PrintWriter out;
-	JFrame frame = new JFrame();
-	JTextField textField = new JTextField(80);
-	JTextArea messageArea = new JTextArea(16, 80);
-	  private String getServerAddress(){
-	      return JOptionPane.showInputDialog(
-	          frame,
-	          "Enter IP Address of the Server:",
-	          "Who is the mafia",
-	          JOptionPane.PLAIN_MESSAGE);
-	  }
-	  
-	 /*°ÔÀÓ¿¡¼­ »ç¿ëÇÒ ÀÌ¸§À» ÀÔ·Â¹ŞÀ½*/
-	  private String getsName(){
-	      return JOptionPane.showInputDialog(
-	          frame,
-	          "Choose a User's ninkname:",
-	          "Who is the mafia",
-	          JOptionPane.PLAIN_MESSAGE);
-	  }
-	  /*¾Æ·¡ run ÇÔ¼öÀÇ int page´Â ¸ŞÀÎÈ­¸é¿¡¼­ ÀÔÀåÇÒ ¶§ ¸¸ À¯ÀúÀÇ ´Ğ³×ÀÓÀ» ¹Ş°í ½Í¾î ¸¸µç º¯¼öÀÔ´Ï´Ù.*/
-	  void run(String[] players, int page) throws IOException {
-	      // Make connection and initialize streams
-		  String serverAddress = new String(getServerAddress());
-		  Socket socket = new Socket(serverAddress, 9001);
-	      in = new BufferedReader(new InputStreamReader(
-	          socket.getInputStream()));
-	      out = new PrintWriter(socket.getOutputStream(), true);
-	      /*¾Æ·¡ while¹®Àº °ÔÀÓ ³» ÇÁ·ÎÅäÄİ¿¡¼­ KICKEDµÇÁö ¾ÊÀ¸¸é GUI°¡ ¿µ¿øÈ÷ Á¾·á ¾È µÇ´Â ¹®Á¦°¡ ÀÖ½À´Ï´Ù..*/
+public class testClient_sendSocket implements Runnable {
+   BufferedReader in;
+   PrintWriter out;
+   JFrame frame = new JFrame();
+   JPanel panel = new JPanel();
+   JTextField textField = new JTextField(20);
+   JTextArea messageArea = new JTextArea(4,40);
+   public testClient_sendSocket(){
+      messageArea.setEditable(false);
+      textField.setEditable(false);
+      testClient_room.frame.getContentPane().add(textField,"South");
+      testClient_room.frame.getContentPane().add(new JScrollPane(messageArea),"East");
+      testClient_room.frame.setVisible(true);
+      textField.addActionListener(new ActionListener() {
+            
+            public void actionPerformed(ActionEvent e) {
+                out.println(textField.getText());
+                textField.setText("");
+            }
+        });
+   }
+   
+     private String getServerAddress(){
+         return JOptionPane.showInputDialog(
+             frame,
+             "Enter IP Address of the Server:",
+             "Who is the mafia",
+             JOptionPane.PLAIN_MESSAGE);
+     }
+     
+    /*ê²Œì„ì—ì„œ ì‚¬ìš©í•  ì´ë¦„ì„ ì…ë ¥ë°›ìŒ*/
+     private String getsName(){
+         return JOptionPane.showInputDialog(
+             frame,
+             "Choose a User's nikname:",
+             "Who is the mafia",
+             JOptionPane.PLAIN_MESSAGE);
+     }
+    
+     /*ì•„ë˜ run í•¨ìˆ˜ì˜ int pageëŠ” ë©”ì¸í™”ë©´ì—ì„œ ì…ì¥í•  ë•Œ ë§Œ ìœ ì €ì˜ ë‹‰ë„¤ì„ì„ ë°›ê³  ì‹¶ì–´ ë§Œë“  ë³€ìˆ˜ì…ë‹ˆë‹¤.*/
+     void runChat(String[] players, int page) throws IOException {
+         // Make connection and initialize streams
+        String serverAddress = new String(getServerAddress());
+        Socket socket = new Socket(serverAddress, 9001);
+         in = new BufferedReader(new InputStreamReader(
+             socket.getInputStream()));
+         out = new PrintWriter(socket.getOutputStream(), true);
+         /*ì•„ë˜ whileë¬¸ì€ ê²Œì„ ë‚´ í”„ë¡œí† ì½œì—ì„œ KICKEDë˜ì§€ ì•Šìœ¼ë©´ GUIê°€ ì˜ì›íˆ ì¢…ë£Œ ì•ˆ ë˜ëŠ” ë¬¸ì œê°€ ìˆìŠµë‹ˆë‹¤..*/
         while (true) {
-			String line = in.readLine();
-			/*¼­¹ö ÁÖ¼Ò¸¦ µÎ¹ø Ä¡°í µé¾î°¡¾ß ÇÏ´Â ¹®Á¦°¡ ÀÖ½À´Ï´Ù..., ·ÎÄÃ¿¡¼­´Â GUIÃ¢À» ¿©·¯°³ ¶ç¿öµµ ÇÁ·Î¼¼½º°¡ ´Ü ÇÏ³ª¸¸ ½ÇÇàµË´Ï´Ù.*/
-			if (page == 1 && line.startsWith("SUBMITNAME")) {
-				out.println(getsName());
-				break;// input name
-			} else if (line.startsWith("NAMEACCEPTED")) {
-				textField.setEditable(true);
-			} else if (line.startsWith("MESSAGE")) {
-				messageArea.append(line.substring(8) + "\n");// input message
-			} else if (line.startsWith("KICKED")) {
-				textField.setEditable(false);
-				break;
-			}
-		}
-	  }
+         String line = in.readLine();
+         /*ì„œë²„ ì£¼ì†Œë¥¼ ë‘ë²ˆ ì¹˜ê³  ë“¤ì–´ê°€ì•¼ í•˜ëŠ” ë¬¸ì œê°€ ìˆìŠµë‹ˆë‹¤..., ë¡œì»¬ì—ì„œëŠ” GUIì°½ì„ ì—¬ëŸ¬ê°œ ë„ì›Œë„ í”„ë¡œì„¸ìŠ¤ê°€ ë‹¨ í•˜ë‚˜ë§Œ ì‹¤í–‰ë©ë‹ˆë‹¤.*/
+         if (line.startsWith("SUBMITNAME")) {
+            out.println(getsName());
+            
+         } else if (line.startsWith("NAMEACCEPTED")) {
+            textField.setEditable(true);
+         } else if (line.startsWith("MESSAGE")) {
+            messageArea.append(line.substring(8) + "\n");// input message
+         } else if (line.startsWith("KICKED")) {
+            textField.setEditable(false);
+            break;
+         }
+      }
+     }
+     public void run(){
+        try{
+           this.runChat(null, 1);
+        }catch(IOException e){
+           e.printStackTrace();
+        }
+     }
 }
