@@ -102,6 +102,11 @@ public class testClient_vote {
 				out.println("/dead" + victim);
 			} else if (line.startsWith("DEAD")) {
 				messageArea.append(line.substring(4) + "\n");
+			} else if (line.startsWith("DOCTOR")) {
+				line = line.substring(6);
+				String protect = doctor(line);
+				System.out.println(protect);
+				out.println("/protect" + protect);
 			} else if (line.startsWith("KICKED")) {
 				System.exit(0);
 			}
@@ -139,6 +144,18 @@ public class testClient_vote {
 				null, selections, "user1");
 		// null에는 이 팝업을 띄울 pane의 이름을 적는다.
 		return selected;
+	}
+
+	public String doctor(String line) {
+		String protect = null;
+		String[] selections = line.split(",");
+		for (int i = 0; i < selections.length; i++)
+			System.out.println(selections[i]);// 투표를 위해 유저이름을 담아놓음. 서버에서 받아와야 함.
+
+		protect = (String) JOptionPane.showInputDialog(null, "누구를 지키실 건가요?", "protect", JOptionPane.QUESTION_MESSAGE,
+				null, selections, "user1");
+		// null에는 이 팝업을 띄울 pane의 이름을 적는다.
+		return protect;
 	}
 
 	public static void main(String[] args) throws Exception {
