@@ -1,7 +1,4 @@
 
-/*기존의 Send_socket 클래스*/
-
-package mafia_test;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
