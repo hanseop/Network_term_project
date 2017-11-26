@@ -1,19 +1,13 @@
-/*
- * Server
- * @author: hanseop shin
- * @comment: hanjin yang
- * */
+package net_hw2;
 
-/*ì„œë²„ ì½”ë“œ ì£¼ì„ì„ ì¼ë‹¨ ì ì–´ ë³¸ ìƒíƒœ.
- * 
- * ì„œë²„ê°€ í•  ì¼
- * 
- * 1. í˜„ì¬ ì½”ë“œ ì •ë¦¬í•˜ê¸°, í•¨ìˆ˜ë¡œêµ¬ì„±í•˜ë©´ì¢‹ì„ê²ƒê°™ì•„ìš”
- * 2. ê¼­! ìœ ì € ì´ë¦„ì´ ë‹´ê¸´ setì„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë³´ë‚´ì£¼ì–´ì•¼í•¨.
- *      ê·¸ë˜ì•¼ë§Œ íˆ¬í‘œí• ë•Œ íŒ¨ë„ì—ì„œ í›„ë³´ë¥¼ ê³ ë¥¼ ìˆ˜ ìˆê²Œí•  ìˆ˜ ìˆìŒ.
- * 3. í´ë¼ì´ì–¸íŠ¸ë“¤ì´ íˆ¬í‘œì—ì„œ ë½‘ì€ í›„ë³´ë¥¼ ë„˜ê²¨ë°›ìœ¼ë©´, killí•  ì‚¬ëŒì„ ì°¾ê³ , ê´€ì „ ì‹œí‚¬ì§€ ì•„ì›ƒ ì‹œí‚¬ì§€ ì½”ë“œ ì§œì¤˜ì•¼ë¨.
- * 4. íˆ¬í‘œë¥¼ ì–¸ì œ ì‹œí–‰í• ê±´ì§€ 5ë¶„ íƒ€ì´ë¨¸ë¥¼ ì´ ê²ƒì¸ë°, íƒ€ì´ë¨¸ë¥¼ ì–¸ì œ ì‹œì‘í• ì§€ ë„£ì–´ì¤˜ì•¼ë¨.
- *      íƒ€ì´ë¨¸ë¥¼ ì§œë†“ì€ í•¨ìˆ˜ëŠ” ê¹ƒí—ˆë¸Œì— testYet_timerë¼ê³  ì—…ë¡œë“œí•´ë‘ì—ˆìŒ.   
+/*¼­¹ö ÄÚµå ÁÖ¼®À» ÀÏ´Ü Àû¾î º» »óÅÂ.
+ * ¼­¹ö°¡ ÇÒ ÀÏ
+ * 1. ÇöÀç ÄÚµå Á¤¸®ÇÏ±â, ÇÔ¼ö·Î±¸¼ºÇÏ¸éÁÁÀ»°Í°°¾Æ¿ä
+ * 2. ²À! À¯Àú ÀÌ¸§ÀÌ ´ã±ä setÀ» Å¬¶óÀÌ¾ğÆ®¿¡°Ô º¸³»ÁÖ¾î¾ßÇÔ.
+ *      ±×·¡¾ß¸¸ ÅõÇ¥ÇÒ¶§ ÆĞ³Î¿¡¼­ ÈÄº¸¸¦ °í¸¦ ¼ö ÀÖ°ÔÇÒ ¼ö ÀÖÀ½.
+ * 3. Å¬¶óÀÌ¾ğÆ®µéÀÌ ÅõÇ¥¿¡¼­ »ÌÀº ÈÄº¸¸¦ ³Ñ°Ü¹ŞÀ¸¸é, killÇÒ »ç¶÷À» Ã£°í, °üÀü ½ÃÅ³Áö ¾Æ¿ô ½ÃÅ³Áö ÄÚµå Â¥Áà¾ßµÊ.
+ * 4. ÅõÇ¥¸¦ ¾ğÁ¦ ½ÃÇàÇÒ°ÇÁö 5ºĞ Å¸ÀÌ¸Ó¸¦ Àê °ÍÀÎµ¥, Å¸ÀÌ¸Ó¸¦ ¾ğÁ¦ ½ÃÀÛÇÒÁö ³Ö¾îÁà¾ßµÊ.
+ *      Å¸ÀÌ¸Ó¸¦ Â¥³õÀº ÇÔ¼ö´Â ±êÇãºê¿¡ testYet_timer¶ó°í ¾÷·ÎµåÇØµÎ¾úÀ½.   
  * */
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,370 +25,420 @@ import java.util.HashSet;
  * players. Alert the starting of game. After 5 minutes from starting, tell
  * players(clients) to vote to kill.
  *
- * @PORT[int] : port number. @ names[String//HashSet] : hashSet about name of players. 
- * @writers[PrintWriter//HashSet] : hashset about address of user, no duplicate
- * @info[str,pw//HashMap] : hashmap about set including name and writer. 
- * @max_client[int] : the maximum number of player, 7.
- * @client_count[int] : number for counting players.
- * @vote[int] : array for storing number after voting.
- * @current_client[int] : check how many players are in game.
- * @is_vote[int] : check how many people vote me
- * @mafia_index, police_index, doctor_index[int] : check job
- * @kicked[int] : check whether kicked or not.
- * @vote[int] :array for check how many voted for each players.
- * @user[string] : array of user.
- * @ID[printWriter] : array of user's ID.
- * @job[string] : array of job for players.
- * @random[int] : for allocating jobs to players, initial the information in array.
+ * @ PORT[int] : port number. @ names[String//HashSet] : hashSet about name of
+ * players. @ writers[PrintWriter//HashSet] : hashset about
+ * writer????????????????????? ¾î¶² ±â´ÉÀ» ÇÏ´Â º¯¼öÀÎÁö.... -> À¯ÀúÀÇ ÁÖ¼Ò¸¦ ¹Ş´Â HashSet(Áßº¹ Çã¿ë
+ * x) @ info[str,pw//HashMap] : hashmap about set including name and writer. @
+ * max_client[int] : the maximum number of player, 7. @ client_count[int] :
+ * number for counting players. @ vote[int] : array for storing number after
+ * voting. @ user[string] : array of user. @ ID[printWriter] : array of user's
+ * ID. @ job[string] : array of job for players. @ random[int] : for allocating
+ * jobs to players, initial the information in array.
  **********************************************************************************************************/
 
 public class testServer {
 
-   private static final int PORT = 9001;
-   private static HashSet<String> names = new HashSet<String>();
-   private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
-   private static HashMap<String, PrintWriter> info = new HashMap<String, PrintWriter>();
-   private static int max_client = 7;
-   private static int client_count = 0;
+	private static final int PORT = 9001;
+	private static HashSet<String> names = new HashSet<String>();
+	private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
+	private static HashMap<String, PrintWriter> info = new HashMap<String, PrintWriter>();
+	private static int max_client = 7;
+	private static int client_count = 0;
 
-   private static int current_client = max_client;
-   private static int is_vote = 0;
-   private static int mafia_index = 9999;
-   private static int police_index = 9999;
-   private static int doctor_index = 9999;
-   private static int[] kicked = new int[max_client];
-   private static int[] vote = new int[max_client];
+	/**************************** modified *******************************/
+	private static int current_client = max_client;
+	private static int is_vote = 0;
+	private static int mafia_index = 9999;
+	private static int police_index = 9999;
+	private static int doctor_index = 9999;
+	private static int[] kicked = new int[max_client];
+	private static int[] vote = new int[max_client];
+	/**************************************************************/
 
-   private static String[] user = new String[max_client];
-   private static PrintWriter[] ID = new PrintWriter[max_client];
-   private static String[] job = { "citizen i'm citizen", "doctor i'm doctor", "citizen i'm citizen",
-         "mafia i'm mafia", "citizen i'm citizen", "police i'm police", "citizen i'm citizen" };
+	private static String[] user = new String[max_client];
+	private static PrintWriter[] ID = new PrintWriter[max_client];
+	private static String[] job = { "citizen i'm citizen", "doctor i'm doctor", "citizen i'm citizen",
+			"mafia i'm mafia", "citizen i'm citizen", "police i'm police", "citizen i'm citizen" };
 
-   private static int[] random = { -1, -1, -1, -1, -1, -1, -1 };
+	private static int[] random = { -1, -1, -1, -1, -1, -1, -1 };
 
-   /* initialize the informations of vote, user and ID */
-   private static void initialize(int[] vote, int[] kicked, String[] user, PrintWriter[] ID) {
-      for (int i = 0; i < max_client; i++) {
-         kicked[i] = 1;
-         vote[i] = 0;
-         user[i] = "null";
-         ID[i] = null;
-      }
-   }
+	/* initialize the informations of vote, user and ID */
+	private static void initialize(int[] vote, int[] kicked, String[] user, PrintWriter[] ID) {
+		for (int i = 0; i < max_client; i++) {
+			/**************************** modified *******************************/
+			kicked[i] = 1;/**************************************************************/
+			vote[i] = 0;
+			user[i] = "null";
+			ID[i] = null;
+		}
+	}
 
-   /* assign a job to players randomly */
-   private static void randomArray(int[] random) {
-      int index = 0;
-      while (true) {
-         int value = (int) (Math.random() * 7);
-         int cnt = 0;
-         for (int i = 0; i < random.length; i++) {
-            if (value == random[i])
-               cnt++;
-         }
-         if (cnt == 0) {
-            random[index] = value;
-            index++;
-         }
-         if (index == random.length)
-            break;
-      }
-   }
+	/* assign a job to players randomly */
+	private static void randomArray(int[] random) {
+		int index = 0;
+		while (true) {
+			int value = (int) (Math.random() * 7);
+			int cnt = 0;
+			for (int i = 0; i < random.length; i++) {
+				if (value == random[i])
+					cnt++;
+			}
+			if (cnt == 0) {
+				random[index] = value;
+				index++;
+			}
+			if (index == random.length)
+				break;
+		}
+	}
 
-   /* assign a job and intialize information. Then, go to handler. */
-   public static void main(String[] args) throws Exception {
+	public static void storeIndex() {
+		for (int i = 0; i < max_client; i++) {
+			if ((job[i].substring(0, job[i].indexOf(" "))).equals("mafia"))
+				mafia_index = i;
+			else if ((job[i].substring(0, job[i].indexOf(" "))).equals("police"))
+				police_index = i;
+			else if ((job[i].substring(0, job[i].indexOf(" "))).equals("doctor"))
+				doctor_index = i;
+		}
+	}
 
-      System.out.println("The chat server is running.");
-      ServerSocket listener = new ServerSocket(PORT);
+	public static void whisper(String input, String name) {
+		String whisper;
+		whisper = input.substring(1, input.indexOf("/>"));
 
-      randomArray(random); // assign a job
-      initialize(vote, kicked, user, ID); // intialize informations of each players
+		if (names.contains(whisper)) {
+			PrintWriter sender = info.get(name);
+			PrintWriter receiver = info.get(whisper);
+			receiver.println("MESSAGE " + "<whisper from " + name + "> : " + input.substring(whisper.length() + 3));
+			sender.println("MESSAGE " + "<whisper to " + whisper + "> : " + input.substring(whisper.length() + 3));
+		} else {
+			PrintWriter sender = info.get(name);
+			sender.println("MESSAGE " + "This user does not exist.");
+		}
 
-      try {
-         while (true) {
-            new Handler(listener.accept()).start();
-         }
-      } finally {
-         listener.close();
-      }
-   }
+	}
 
-   /*************************************************************
-    * class Handler
-    * 
-    * this is for socket programming between server and clients.
-    * 
-    * @ name[String] : name 
-    * @ socket[socket] : socket 
-    * @ in[BufferedReader] : BufferedReader
-    * @ out[PrintWriter] : printwriter
-    *************************************************************/
-   private static class Handler extends Thread {
+	public static void whatIsMyJob(String name) {
+		int temp_index = 0;
 
-      private String name;
-      private Socket socket;
-      private BufferedReader in;
-      private PrintWriter out;
+		for (int i = 0; i < client_count; i++) {
+			if (name == user[i])
+				temp_index = i;
+		}
 
-      public Handler(Socket socket) {
-         this.socket = socket;
-      }
+		PrintWriter sender = info.get(name);
+		sender.println("MESSAGE " + "your job is " + job[temp_index].substring(0, job[temp_index].indexOf(" ")));
+	}
 
-      /* run for socket programming */
-      public void run() {
-         try {
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // read from user
-            out = new PrintWriter(socket.getOutputStream(), true); // print out to console
+	public static void whatIsMyRole(String name) {
+		int temp_index = 0;
+		for (int i = 0; i < client_count; i++) {
+			if (name == user[i])
+				temp_index = i;
+		}
+		PrintWriter sender = info.get(name);
+		sender.println("MESSAGE " + "your role is " + job[temp_index].substring(job[temp_index].indexOf(" ")));
+	}
 
-            while (true) {// read a name of player
-               out.println("SUBMITNAME");
-               name = in.readLine();
-               if (name == null) {
-                  return;
-               }
-               synchronized (names) {
-                  // if any user enters, alert to every players.
-                  sendToallclient("CONNECT " + name + " is connected.\n");
+	public static void vote() {
+		String temp = null;
+		for (int i = 0; i < max_client; i++) {
+			if (kicked[i] != 0) {
+				if (temp == null) {
+					temp = user[i];
+				} else {
+					temp += ("," + user[i]);
+				}
+			}
+		}
+		System.out.println(temp);
+		for (PrintWriter writer : writers) {
+			writer.println("VOTENAME " + temp);
+		}
+	}
 
-                  if (!names.contains(name)) { // there must be no duplicate in name.
-                     names.add(name);
+	public static void whoIsVictim(String input) {
+		String victim = input.substring(7);
+		int temp_index = 0;
+		for (int i = 0; i < max_client; i++) {
+			if (user[i].equals(victim) && kicked[i] != 0)
+				temp_index = i;
+		}
+		is_vote++;
+		vote[temp_index]++;
+	}
 
-                     for (PrintWriter writer : writers) { // if any user enters, memo in server's console.
-                                                   // ë§ë‚˜..??? -> ìƒˆë¡œìš´ ìœ ì €ê°€ ë“¤ì–´ì˜¬ ê²½ìš° ì±„íŒ…ì°½ìœ¼ë¡œ ìœ ì €ë“¤ì—ê²Œ [name]
-                                                   // enterë¼ê³  ì•Œë ¤ì¤Œ
-                        writer.println("MESSAGE " + "[" + name + "] enter");
-                     }
-                     break;
-                  }
-               }
-            }
-            out.println("NAMEACCEPTED"); // if user enters own name, give check-message and activate chatting window for user.
-            writers.add(out); // save the address of users into hashset, writers.
-            user[client_count] = name; // store a name in array.
-            ID[client_count] = out; // store an ID in array.
+	public static void showJob(String name) {
+		PrintWriter police = info.get(name);
+		String temp = null;
+		for (int i = 0; i < max_client; i++) {
+			if (kicked[i] != 0 && !user[i].equals(user[police_index])) {
+				if (temp == null) {
+					temp = user[i];
+				} else {
+					temp += ("," + user[i]);
+				}
+			}
+		}
+		System.out.println(temp);
+		if (name.equals(user[police_index])) {
+			police.println("JOB" + temp);
+		} else {
+			police.println("MESSAGE " + "You are not police");
+		}
+	}
 
-            client_count++; // for next users, do count++.
+	public static void isHeMafia(String name, String input) {
+		PrintWriter police = info.get(name);
+		String selected = input.substring(8);
+		int temp_index = 0;
+		for (int i = 0; i < max_client; i++) {
+			if (user[i].equals(selected) && kicked[i] != 0)
+				temp_index = i;
+		}
+		police.println("IS_MAFIA?" + user[temp_index] + "' job is"
+				+ job[temp_index].substring(job[temp_index].indexOf(" ") + 1));
+	}
 
-            System.out.println(user[client_count - 1] + "ë‹˜ì´ ì…ì¥í•˜ì…¨ìŠµë‹ˆë‹¤.");
-            System.out.println("í˜„ì¬ ì¸ì› " + client_count + "ëª…");
+	public static void broadcast(String name, String input) {
+		for (PrintWriter writer : writers) {
+			writer.println("MESSAGE " + name + ": " + input);
+		}
+	}
 
-            info.put(name, out);
+	public static void voteResult() {
+		if (is_vote == client_count) {
+			int count = 0;
+			int temp_index = 0;
+			int same = 0;
+			for (int i = 0; i < max_client; i++) {
+				if (vote[i] > count) {
+					count = vote[i];
+					temp_index = i;
+				}
+			}
+			for (int i = 0; i < max_client; i++) {
+				if (count == vote[i] && i != temp_index)
+					same = 1;
+			}
 
-            if (client_count == max_client) {
-               // if all player gathers, start the game.
-               for (PrintWriter writer : writers) {
-                  writer.println("MESSAGE " + "game start");
-               }
+			if (count == 0)
+				same = 0;
 
-               // assign a job to player
-               for (int i = 0; i < max_client; i++) {
-                  String temp = job[i];
-                  job[i] = job[random[i]];
-                  job[random[i]] = temp;
-               }
+			if (same != 1) {
+				for (PrintWriter writer : writers) {
+					writer.println("MESSAGE " + user[temp_index] + " kicked");
+				}
+				PrintWriter victim = info.get(user[temp_index]);
+				victim.println("KICKED");
+				kicked[temp_index] = 0;
+				current_client--;
+			} else {
+				for (PrintWriter writer : writers) {
+					writer.println("MESSAGE " + "Nothing happened");
+				}
+			}
+			is_vote = 0;
+			count = 0;
+			for (int i = 0; i < max_client; i++)
+				vote[i] = 0;
+		}
+	}
 
-               for (int i = 0; i < max_client; i++) {
-                  if ((job[i].substring(0, job[i].indexOf(" "))).equals("mafia"))
-                     mafia_index = i;
-                  else if ((job[i].substring(0, job[i].indexOf(" "))).equals("police"))
-                     police_index = i;
-                  else if ((job[i].substring(0, job[i].indexOf(" "))).equals("doctor"))
-                     doctor_index = i;
-               }
-               System.out.println("mafia index : " + mafia_index);
-               // tell a job to each players.? ì´ ê³¼ì •ì´ ë§ë‚˜..?
-               // ì¶”í›„, ì§ì—…ë°°ì •ë°›ì€ ì •ë³´ë¥¼ ì†Œì¼“ì— ë‹´ì•„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì£¼ë©´ íŒì—…ì°½ìœ¼ë¡œì•Œë ¤ì£¼ëŠ” ê²Œ ì¢‹ì„ ê²ƒ ê°™ìŒ...
-               for (int i = 0; i < max_client; i++)
-                  System.out.println(job[i]);
-            }
+	public static void whoIsWin() {
+		if (kicked[mafia_index] == 0) {
+			for (PrintWriter writer : writers) {
+				writer.println("MESSAGE " + "mafia dead!, citizen win!");
+			}
+			System.exit(0);
+		} else if (current_client == 2) {
+			for (PrintWriter writer : writers) {
+				writer.println("MESSAGE " + "mafia win!");
+			}
+			System.exit(0);
+		}
+	}
 
-            while (true) {
-               String input = in.readLine();
+	/* assign a job and intialize information. Then, go to handler. */
+	public static void main(String[] args) throws Exception {
 
-               if (input == null) { // if input is null,
-                  return;
-               }
+		System.out.println("The chat server is running.");
+		ServerSocket listener = new ServerSocket(PORT); // error?????????????????
 
-               // whisper-> PAí• ë•Œ ì“°ë˜ ì½”ë“œë¥¼ ê·¸ëŒ€ë¡œ ì¨ì„œ ìˆìŒ ì‚­ì œí•´ë„ ë¬´ë°©
-               else if (input.startsWith("<") && input.indexOf("/>") != -1) {
-                  String whisper;
-                  whisper = input.substring(1, input.indexOf("/>"));
+		randomArray(random); // assign a job
+		initialize(vote, kicked, user, ID); // intialize informations of each players
 
-                  if (names.contains(whisper)) {
-                     PrintWriter sender = info.get(name);
-                     PrintWriter receiver = info.get(whisper);
-                     receiver.println("MESSAGE " + "<whisper from " + name + "> : "
-                           + input.substring(whisper.length() + 3));
-                     sender.println("MESSAGE " + "<whisper to " + whisper + "> : "
-                           + input.substring(whisper.length() + 3));
-                  } else {
-                     PrintWriter sender = info.get(name);
-                     sender.println("MESSAGE " + "This user does not exist.");
-                  }
+		try {
+			while (true) {
+				new Handler(listener.accept()).start();
+			}
+		} finally {
+			listener.close();
+		}
+	}
 
-               }
-               // tell a job
-               // ì§ì—…ë°°ì •ë°›ì€ ì •ë³´ë¥¼ ì†Œì¼“ì— ë‹´ì•„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì£¼ë©´ íŒì—…ì°½ìœ¼ë¡œ ì•Œë ¤ì£¼ëŠ” ê²Œ ì¢‹ì„ ê²ƒ ê°™ìŒ... !
-               // í˜„ì¬ ì„œë²„ì— êµ¬í˜„í•´ë†“ì€ ê¸°ëŠ¥ì€ guiì™€ ì—°ë™ë˜ì§€ ì•Šê³  ìˆœìˆ˜ ê¸°ëŠ¥ë§Œ êµ¬í˜„í•´ ë†“ì•˜ìŠµë‹ˆë‹¤. ì¶”í›„ guiê°€ ì™„ì„±ë˜ë©´ êµ¬í˜„ ì˜ˆì •
-               else if (input.startsWith("/") && input.indexOf("job") != -1) {
-                  int temp_index = 0;
+	/*************************************************************
+	 * class Handler
+	 * 
+	 * this is for socket programming between server and clients.
+	 * 
+	 * @ name[String] : name @ socket[socket] : socket @ in[BufferedReader] :
+	 * BufferedReader @ out[PrintWriter] : printwriter
+	 *************************************************************/
+	private static class Handler extends Thread {
 
-                  for (int i = 0; i < client_count; i++) {
-                     if (name == user[i])
-                        temp_index = i;
-                  }
+		private String name;
+		private Socket socket;
+		private BufferedReader in;
+		private PrintWriter out;
 
-                  PrintWriter sender = info.get(name);
-                  sender.println("MESSAGE " + "your job is "
-                        + job[temp_index].substring(0, job[temp_index].indexOf(" ")));
-               }
-               // tell a role
-               else if (input.startsWith("/") && input.indexOf("role") != -1) {
-                  int temp_index = 0;
-                  for (int i = 0; i < client_count; i++) {
-                     if (name == user[i])
-                        temp_index = i;
-                  }
-                  PrintWriter sender = info.get(name);
-                  sender.println(
-                        "MESSAGE " + "your role is " + job[temp_index].substring(job[temp_index].indexOf(" ")));
-               }
-               // íˆ¬í‘œëŠ” 5ë¶„íƒ€ì´ë¨¸ ì´í›„ì— íŒ¨ë„-íŒì—…ì°½ì„ ë„ì›Œì„œ ë°”ë¡œ í•˜ê²Œ ë§Œë“œëŠ”ê²Œ ì¢‹ì„ ê²ƒ ê°™ì•„ìš”.
-               // í˜„ì¬ ì„œë²„ì— êµ¬í˜„í•´ë†“ì€ ê¸°ëŠ¥ì€ guiì™€ ì—°ë™ë˜ì§€ ì•Šê³  ìˆœìˆ˜ ê¸°ëŠ¥ë§Œ êµ¬í˜„í•´ ë†“ì•˜ìŠµë‹ˆë‹¤. ì¶”í›„ guiê°€ ì™„ì„±ë˜ë©´ êµ¬í˜„ ì˜ˆì •
-               else if (input.startsWith("/") && input.indexOf("vote") != -1) {
-                  int temp_index = 0;
-                  for (int i = 0; i < client_count; i++) {
-                     if (name == user[i])
-                        temp_index = i;
-                  }
-               }
-       
-               // 11ì›”24ì¼ ëª¨ì„ë•Œ ë§ì”€í•˜ì…¨ë˜ íˆ¬í‘œë¥¼ í• ë•Œ ì„œë²„ì—ì„œ í´ë¼ì´ì–¸íŠ¸ë“¤ì˜ ì´ë¦„ì„ ë°›ì•„ì˜¤ê¸° ìœ„í•œ ê³¼ì •ì…ë‹ˆë‹¤. ìœ ì €ê°€ ì±„íŒ…ì°½ì— /nameì´ë¼ê³  ì¹˜ë©´
-               // í˜„ì¬ ë“¤ì–´ì™€ ìˆëŠ” ìœ ì €ë“¤ì˜ ì´ë¦„ì´ guiíŒì—…ì°½ìœ¼ë¡œ ëœ¸
-               // ì•„ì§ ë¯¸ì™„ì„±
-               else if (input.startsWith("/") && input.indexOf("name") != -1) {
-                  String temp = null;
-                  for (int i = 0; i < max_client; i++) {
-                     if (kicked[i] != 0) {
-                        if (temp == null) {
-                           temp = user[i];
-                        } else {
-                           temp += ("," + user[i]);
-                        }
-                     }
-                  }
-                  System.out.println(temp);
-                  for (PrintWriter writer : writers) {
-                     writer.println("VOTENAME " + temp);
-                  }
-               } 
-               // ? check victim
-               else if (input.startsWith("/") && input.indexOf("victim") != -1) {
-                  String victim = input.substring(7);
-                  int temp_index = 0;
-                  for (int i = 0; i < max_client; i++) {
-                     if (user[i].equals(victim) && kicked[i] != 0)
-                        temp_index = i;
-                  }
-                  is_vote++;
-                  vote[temp_index]++;
-               }
-               // role for police
-               else if (input.startsWith("/") && input.indexOf("police") != -1) {
-                  PrintWriter police = info.get(name);
-                  String job_name = input.substring(input.indexOf(" ") + 1);
-                  System.out.println(job_name);
-                  if (name.equals(user[police_index])) {
+		public Handler(Socket socket) {
+			this.socket = socket;
+		}
 
-                  }
-               }
-               // if any user chats, show it to all players.
-               else {
-                  for (PrintWriter writer : writers) {
-                     writer.println("MESSAGE " + name + ": " + input);
-                  }
-               }
+		/* run for socket programming */
+		public void run() {
+			try {
+				in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // read from user
+				out = new PrintWriter(socket.getOutputStream(), true); // print out to console
 
-               //after voting, kick and tell players.
-               if (is_vote == client_count) {
-                  int count = 0;
-                  int temp_index = 0;
-                  int same = 0;
-                  for (int i = 0; i < max_client; i++) {
-                     if (vote[i] > count) {
-                        count = vote[i];
-                        temp_index = i;
-                     }
-                  }
-                  for (int i = 0; i < max_client; i++) {
-                     if (count == vote[i] && i != temp_index)
-                        same = 1;
-                  }
+				while (true) {// read a name of player
+					out.println("SUBMITNAME");
+					name = in.readLine();
+					if (name == null) {
+						return;
+					}
+					synchronized (names) {
+						// if any user enters, alert to every players.
+						sendToallclient("CONNECT " + name + " is connected.\n");
 
-                  if (count == 0)
-                     same = 0;
+						if (!names.contains(name)) { // there must be no duplicate in name.
+							names.add(name);
 
-                  if (same != 1) {
-                     for (PrintWriter writer : writers) {
-                        writer.println("MESSAGE " + user[temp_index] + " kicked");
-                     }
-                     PrintWriter victim = info.get(user[temp_index]);
-                     victim.println("KICKED");
-                     kicked[temp_index] = 0;
-                     current_client--;
-                  } else {
-                     for (PrintWriter writer : writers) {
-                        writer.println("MESSAGE " + "Nothing happened");
-                     }
-                  }
-                  is_vote = 0;
-                  count = 0;
-                  for (int i = 0; i < max_client; i++)
-                     vote[i] = 0;
-               }
+							for (PrintWriter writer : writers) { // if any user enters, memo in server's console.
+																	// ¸Â³ª..??? -> »õ·Î¿î À¯Àú°¡ µé¾î¿Ã °æ¿ì Ã¤ÆÃÃ¢À¸·Î À¯Àúµé¿¡°Ô [name]
+																	// enter¶ó°í ¾Ë·ÁÁÜ
+								writer.println("MESSAGE " + "[" + name + "] enter");
+							}
+							break;
+						}
+					}
+				}
+				out.println("NAMEACCEPTED"); // if user enters own name, give check-message. ??? ->Å¬¶óÀÌ¾ğÆ®¿¡°Ô
+												// NAMEACCPETED¶ó´Â ÇÁ·ÎÅäÄİ¸Ş¼¼Áö¸¦ º¸³»ÁÜ ->À¯ÀúÀÇ Ã¤ÆÃÃ¢ È°¼ºÈ­ ½ÃÄÑÁÜ
+				writers.add(out); // ??? -> À¯ÀúÀÇ ÁÖ¼Ò¸¦ hashset¿¡ ÀúÀå
+				user[client_count] = name; // store a name in array.
+				ID[client_count] = out; // store an ID in array.
 
-               //check whether mafia is win or citizen is win
-               if (kicked[mafia_index] == 0) {
-                  for (PrintWriter writer : writers) {
-                     writer.println("MESSAGE " + "mafia dead!, citizen win!");
-                  }
-                  System.exit(0);
-               } else if (current_client == 2) {
-                  for (PrintWriter writer : writers) {
-                     writer.println("MESSAGE " + "mafia win!");
-                  }
-                  System.exit(0);
-               }
-               /*****************************************************************************/
-            }
-         } catch (IOException e) { // if there is error, alert.
-            System.out.println(e);
-         } finally { // if client is out, alert.
-            if (name != null) {
-               for (PrintWriter writer : writers) {
-                  writer.println("MESSAGE " + "[" + name + "] exit");
-               }
-               names.remove(name);
-               info.remove(name);
-               client_count--;
-               System.out.println("í•œëª… ë‚˜ê°”ë‹¤ " + client_count);
-            }
-            if (out != null) {
-               writers.remove(out);
-            }
-            try {
-               socket.close();
-            } catch (IOException e) {
-            }
-         }
-      }
-   }
+				client_count++; // for next users, do count++.
 
-   // ì–´ë–¤ê²ƒì„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì•Œë ¤ì£¼ëŠ” ê²ƒì¸ì§€ ì˜ ëª¨ë¥´ê² ì–´ìš”~
-   public static void sendToallclient(String mssg) {
-      for (PrintWriter writer : writers) {
-         writer.println(mssg);
-         writer.flush();
-      }
-   }
+				System.out.println(user[client_count - 1] + "´ÔÀÌ ÀÔÀåÇÏ¼Ì½À´Ï´Ù.");
+				System.out.println("ÇöÀç ÀÎ¿ø " + client_count + "¸í");
+
+				info.put(name, out);
+
+				if (client_count == max_client) {
+					// if all player gathers, start the game.
+					for (PrintWriter writer : writers) {
+						writer.println("MESSAGE " + "game start");
+					}
+
+					// assign a job to player. ..? ¸Â´Â°Ç°¡..??
+					for (int i = 0; i < max_client; i++) {
+						String temp = job[i];
+						job[i] = job[random[i]];
+						job[random[i]] = temp;
+					}
+
+					storeIndex();
+					// tell a job to each players.? ÀÌ °úÁ¤ÀÌ ¸Â³ª..?--Á÷¾÷¹èÁ¤¹ŞÀº Á¤º¸¸¦ ¼ÒÄÏ¿¡ ´ã¾Æ Å¬¶óÀÌ¾ğÆ®¿¡°Ô ÁÖ¸é ÆË¾÷Ã¢À¸·Î
+					// ¾Ë·ÁÁÖ´Â °Ô ÁÁÀ» °Í °°À½...
+					for (int i = 0; i < max_client; i++)
+						System.out.println(job[i]);
+				}
+
+				while (true) {
+					// ¿©±â¼­ºÎÅÍ ¾î¶² °úÁ¤ÀÎÁö Àß ¸ğ¸£°ÚÀ½...
+					String input = in.readLine();
+
+					if (input == null) { // if input is null,
+						return;
+					}
+
+					// whisper..?????? ÇÊ¿äÇÑ ÀÌÀ¯..??? -> PAÇÒ¶§ ¾²´ø ÄÚµå¸¦ ±×´ë·Î ½á¼­ ÀÖÀ½ »èÁ¦ÇØµµ ¹«¹æ
+					else if (input.startsWith("<") && input.indexOf("/>") != -1) {
+						whisper(input, name);
+					}
+					// tell a job --¸í·É¾î¸¦ ½á¾ß¸¸ Á÷¾÷À» ¾Ë·ÁÁÖ´Â..??°Í º¸´Ù´Â ÀÏ¹æÀûÀ¸·Î ¾Ë·ÁÁÖ´Â°Ô ÁÁÀ» °Í °°¾Æ¿ä~
+					// Á÷¾÷¹èÁ¤¹ŞÀº Á¤º¸¸¦ ¼ÒÄÏ¿¡ ´ã¾Æ Å¬¶óÀÌ¾ğÆ®¿¡°Ô ÁÖ¸é ÆË¾÷Ã¢À¸·Î ¾Ë·ÁÁÖ´Â °Ô ÁÁÀ» °Í °°À½... !
+					// ÇöÀç ¼­¹ö¿¡ ±¸ÇöÇØ³õÀº ±â´ÉÀº gui¿Í ¿¬µ¿µÇÁö ¾Ê°í ¼ø¼ö ±â´É¸¸ ±¸ÇöÇØ ³õ¾Ò½À´Ï´Ù. ÃßÈÄ gui°¡ ¿Ï¼ºµÇ¸é ±¸Çö ¿¹Á¤
+					else if (input.startsWith("/") && input.indexOf("job") != -1) {
+						whatIsMyJob(input);
+					}
+					// job°ú roleÀÇ Â÷ÀÌ??? job : Á÷¾÷ role : ¿ªÇÒ(´É·Â)
+					else if (input.startsWith("/") && input.indexOf("role") != -1) {
+						whatIsMyRole(input);
+					}
+					// ÅõÇ¥´Â 5ºĞÅ¸ÀÌ¸Ó ÀÌÈÄ¿¡ ÆĞ³Î-ÆË¾÷Ã¢À» ¶ç¿ö¼­ ¹Ù·Î ÇÏ°Ô ¸¸µå´Â°Ô ÁÁÀ» °Í °°¾Æ¿ä.
+					// ¸í·É¾î¸¦ ÀÔ·ÂÇÏ°í ÅõÇ¥ÇÏ´Â ¹æ½ÄÀº, Å¬¶óÀÌ¾ğÆ®¸¶´Ù °¢ÀÚ ´Ù¸¥ ½Ã±â¿¡ ¼±ÅÃÇÒ °Í °°¾Æ¼­¿ä~
+					// ÇöÀç ¼­¹ö¿¡ ±¸ÇöÇØ³õÀº ±â´ÉÀº gui¿Í ¿¬µ¿µÇÁö ¾Ê°í ¼ø¼ö ±â´É¸¸ ±¸ÇöÇØ ³õ¾Ò½À´Ï´Ù. ÃßÈÄ gui°¡ ¿Ï¼ºµÇ¸é ±¸Çö ¿¹Á¤
+
+					// ÀÌ¸§??? ¹¹ÇÏ´Â ºÎºĞÀÎÁö Àß ¸ğ¸£°Ú¾î¿ä...
+					// 11¿ù24ÀÏ ¸ğÀÓ¶§ ¸»¾¸ÇÏ¼Ì´ø ÅõÇ¥¸¦ ÇÒ¶§ ¼­¹ö¿¡¼­ Å¬¶óÀÌ¾ğÆ®µéÀÇ ÀÌ¸§À» ¹Ş¾Æ¿À±â À§ÇÑ °úÁ¤ÀÔ´Ï´Ù. À¯Àú°¡ Ã¤ÆÃÃ¢¿¡ /nameÀÌ¶ó°í Ä¡¸é
+					// ÇöÀç µé¾î¿Í ÀÖ´Â À¯ÀúµéÀÇ ÀÌ¸§ÀÌ guiÆË¾÷Ã¢À¸·Î ¶ä
+					// ¾ÆÁ÷ ¹Ì¿Ï¼º
+					/***************************************
+					 * modified
+					 *******************************************/
+					else if (input.startsWith("/") && input.indexOf("name") != -1) {
+						vote();
+					} else if (input.startsWith("/") && input.indexOf("victim") != -1) {
+						whoIsVictim(input);
+					} else if (input.startsWith("/") && input.indexOf("police") != -1) {
+						showJob(name);
+					} else if (input.startsWith("/") && input.indexOf("is_he_mafia?") != -1) {
+						isHeMafia(input, input);
+					}
+					// ¹¹ÇÏ´Â ºÎºĞÀÎÁö Àß ¸ğ¸£°Ú¾î¿ä..¤Ğ¤Ğ
+					// À¯Àú°¡ Ã¤ÆÃÀ» Ä¡¸é ´Ù¸¥ À¯Àúµé¿¡°Ô º¸³»ÁÖ´Â ±â´É
+					else {
+						broadcast(input, input);
+					}
+					voteResult();
+					whoIsWin();
+
+					/*****************************************************************************/
+				}
+			} catch (IOException e) { // °©ÀÚ±â catch°¡ ³ª¿Â ÀÌÀ¯..? -> ¿¡·¯ ¹ß»ı½Ã
+				System.out.println(e);
+			} finally { // if client is out, alert.
+				if (name != null) {
+					for (PrintWriter writer : writers) {
+						writer.println("MESSAGE " + "[" + name + "] exit");
+					}
+					names.remove(name);
+					info.remove(name);
+					client_count--;
+					System.out.println("ÇÑ¸í ³ª°¬´Ù " + client_count);
+				}
+				if (out != null) {
+					writers.remove(out);
+				}
+				try {
+					socket.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+
+	}
+
+	// ¾î¶²°ÍÀ» Å¬¶óÀÌ¾ğÆ®¿¡°Ô ¾Ë·ÁÁÖ´Â °ÍÀÎÁö Àß ¸ğ¸£°Ú¾î¿ä~
+	public static void sendToallclient(String mssg) {
+		for (PrintWriter writer : writers) {
+			writer.println(mssg);
+			writer.flush();
+		}
+	}
 }
