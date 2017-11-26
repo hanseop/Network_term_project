@@ -331,6 +331,10 @@ public class testServer {
 						}
 						mafia.println("DEAD" + user[temp_index] + " dead");
 						dead.println("KICKED");
+						for (PrintWriter writer : writers) {
+							writer.println("MESSAGE " + user[temp_index] + " was "
+									+ job[temp_index].substring(0, job[temp_index].indexOf(" ")));
+						}
 						kicked[temp_index] = 0;
 						current_client--;
 					} else if (input.startsWith("/") && input.indexOf("police") != -1) {
@@ -396,6 +400,10 @@ public class testServer {
 							}
 							PrintWriter victim = info.get(user[temp_index]);
 							victim.println("KICKED");
+							for (PrintWriter writer : writers) {
+								writer.println("MESSAGE " + user[temp_index] + " was "
+										+ job[temp_index].substring(0, job[temp_index].indexOf(" ")));
+							}
 							kicked[temp_index] = 0;
 							current_client--;
 						} else {
