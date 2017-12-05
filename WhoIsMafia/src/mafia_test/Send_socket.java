@@ -1,5 +1,4 @@
-package net_hw2;
-
+/**/
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +18,7 @@ public class Send_socket implements Runnable {
 	static PrintWriter out;
 	JFrame frame = new JFrame();
 	JPanel panel = new JPanel();
-	Font font = new Font("³ª´®°íµñ", Font.PLAIN, 20);
+	Font font = new Font("ë‚˜ëˆ”ê³ ë”•", Font.PLAIN, 20);
 	JTextField textField = new JTextField(22);
 	JTextArea messageArea = new JTextArea(4, 22);
 	public String[] vote_name = new String[7];
@@ -46,7 +45,7 @@ public class Send_socket implements Runnable {
 				JOptionPane.PLAIN_MESSAGE);
 	}
 
-	/* À¯Àú ´Ğ³×ÀÓ ÀÔ·Â */
+	/* ìœ ì € ë‹‰ë„¤ì„ ì…ë ¥ */
 	private String getsName() {
 		return JOptionPane.showInputDialog(frame, "Choose a User's nikname:", "Who is the mafia",
 				JOptionPane.PLAIN_MESSAGE);
@@ -74,7 +73,7 @@ public class Send_socket implements Runnable {
 				JOptionPane.showMessageDialog(null, line.substring(6));
 			}
 
-			// out.println("vote"+vote(players)); //-> players À¯Àú ÀÌ¸§ÀÌ ´ã±ä ¸®½ºÆ®
+			// out.println("vote"+vote(players)); //-> players ìœ ì € ì´ë¦„ì´ ë‹´ê¸´ ë¦¬ìŠ¤íŠ¸
 			else if (line.startsWith("JOB")) {
 				line = line.substring(3);
 				String selected = police(line);
@@ -83,7 +82,7 @@ public class Send_socket implements Runnable {
 			} else if (line.startsWith("IS_MAFIA?")) {
 				messageArea.append(line.substring(9) + "\n");
 				out.println("/kill");
-			} else if (line.startsWith("VOTENAME ")) {//Å×½ºÆÃ ±¸¹®
+			} else if (line.startsWith("VOTENAME ")) {//í…ŒìŠ¤íŒ… êµ¬ë¬¸
 				line = line.substring(9);
 				String victim = vote(line);
 				System.out.println(victim);
@@ -102,7 +101,7 @@ public class Send_socket implements Runnable {
 				out.println("/protect" + protect);
 			} else if (line.startsWith("D_START")) {
 				messageArea.append("\t[SYSTEM MESSAGE]" + "\n");
-				messageArea.append("\t¾ÆÄ§ÀÌ ¹à¾Ò´Ù." + "\n");
+				messageArea.append("\tì•„ì¹¨ì´ ë°ì•˜ë‹¤." + "\n");
 				messageArea.append(line.substring(7) + "\n");
 			} else if (line.startsWith("MATRIX")) {
 				int count = 0;
@@ -116,17 +115,17 @@ public class Send_socket implements Runnable {
 				}
 			} else if (line.startsWith("T_START")) {
 				messageArea.append("\t[SYSTEM MESSAGE]" + "\n");
-				messageArea.append("      Áõ°Å¸¦ ÃæºĞÈ÷ Ã£Àº °Í °°´Ù." + "\n");
-				messageArea.append("     »ç¶÷µé°ú ÀÇ³íÇÏ¿© ¸¶ÇÇ¾Æ¸¦ Ã£ÀÚ." + "\n");
+				messageArea.append("      ì¦ê±°ë¥¼ ì¶©ë¶„íˆ ì°¾ì€ ê²ƒ ê°™ë‹¤." + "\n");
+				messageArea.append("     ì‚¬ëŒë“¤ê³¼ ì˜ë…¼í•˜ì—¬ ë§ˆí”¼ì•„ë¥¼ ì°¾ì." + "\n");
 				t3.start();
 				JOptionPane.showMessageDialog(actionFrame, line, "Message", 2);
 			} else if (line.startsWith("V_END")) {
 				messageArea.append(line.substring(5)+"\n\n");
 				messageArea.append("\t[SYSTEM MESSAGE]" + "\n");
-				messageArea.append("       ÇÑ¹ãÁßÀÌ µÇ¾ú´Ù." + "\n");
-				messageArea.append("    º¸¾È°üÀº ÀÇ½É °¡´Â »ç¶÷À» ½É¹®ÇÑ´Ù." + "\n");
-				messageArea.append("     ¸¶ÇÇ¾Æ´Â ´ÙÀ½ »ìÇØ ´ë»óÀ» °í¸¥´Ù." + "\n");
-				messageArea.append("      ÀÇ»ç´Â ÇÑ »ç¶÷À» º¸È£ÇÑ´Ù." + "\n");
+				messageArea.append("       í•œë°¤ì¤‘ì´ ë˜ì—ˆë‹¤." + "\n");
+				messageArea.append("    ë³´ì•ˆê´€ì€ ì˜ì‹¬ ê°€ëŠ” ì‚¬ëŒì„ ì‹¬ë¬¸í•œë‹¤." + "\n");
+				messageArea.append("     ë§ˆí”¼ì•„ëŠ” ë‹¤ìŒ ì‚´í•´ ëŒ€ìƒì„ ê³ ë¥¸ë‹¤." + "\n");
+				messageArea.append("      ì˜ì‚¬ëŠ” í•œ ì‚¬ëŒì„ ë³´í˜¸í•œë‹¤." + "\n");
 				out.println("/police");
 			} else if (line.startsWith("KICKED")) {
 				System.exit(0);
@@ -135,23 +134,23 @@ public class Send_socket implements Runnable {
 
 	}
 
-	public String vote(String line) { //Å×½ºÆÃ
+	public String vote(String line) { //í…ŒìŠ¤íŒ…
 		String candidate = null;
 		String[] selections = line.split(",");
 		for (int i = 0; i < selections.length; i++)
-			System.out.println(selections[i]);//ÅõÇ¥¸¦ À§ÇÑ À¯Àú ÀÌ¸§À» ´ã´Â º¯¼ö
+			System.out.println(selections[i]);//íˆ¬í‘œë¥¼ ìœ„í•œ ìœ ì € ì´ë¦„ì„ ë‹´ëŠ” ë³€ìˆ˜
 
-		candidate = (String) JOptionPane.showInputDialog(null, "¸¶ÇÇ¾Æ·Î ÀÇ½ÉµÇ´Â »ç¶÷À» Áö¸ñÇÏÀÚ.", "vote", JOptionPane.QUESTION_MESSAGE,
+		candidate = (String) JOptionPane.showInputDialog(null, "ë§ˆí”¼ì•„ë¡œ ì˜ì‹¬ë˜ëŠ” ì‚¬ëŒì„ ì§€ëª©í•˜ì.", "vote", JOptionPane.QUESTION_MESSAGE,
 				null, selections, "user1");
-		return candidate; // ->¼­¹ö¿¡°Ô candidate Àü´Ş
+		return candidate; // ->ì„œë²„ì—ê²Œ candidate ì „ë‹¬
 	}
 
-	public String police(String line) { //Å×½ºÆÃ
+	public String police(String line) { //í…ŒìŠ¤íŒ…
 		String selected = null;
 		String[] selections = line.split(",");
 		for (int i = 0; i < selections.length; i++)
-			System.out.println(selections[i]);//À¯Àú ÀÌ¸§ ÀúÀå º¯¼ö
-		selected = (String) JOptionPane.showInputDialog(null, "´©±¸¸¦ Á×ÀÏ±î...", "select", JOptionPane.QUESTION_MESSAGE,
+			System.out.println(selections[i]);//ìœ ì € ì´ë¦„ ì €ì¥ ë³€ìˆ˜
+		selected = (String) JOptionPane.showInputDialog(null, "ëˆ„êµ¬ë¥¼ ì£½ì¼ê¹Œ...", "select", JOptionPane.QUESTION_MESSAGE,
 				null, selections, "user1");
 		return selected;
 	}
@@ -160,9 +159,9 @@ public class Send_socket implements Runnable {
 		String protect = null;
 		String[] selections = line.split(",");
 		for (int i = 0; i < selections.length; i++)
-			System.out.println(selections[i]);//À¯Àú ÀÌ¸§ ÀúÀå º¯¼ö
+			System.out.println(selections[i]);//ìœ ì € ì´ë¦„ ì €ì¥ ë³€ìˆ˜
 
-		protect = (String) JOptionPane.showInputDialog(null, "´©±¸¸¦ º¸È£ÇÒ±î...", "protect", JOptionPane.QUESTION_MESSAGE,
+		protect = (String) JOptionPane.showInputDialog(null, "ëˆ„êµ¬ë¥¼ ë³´í˜¸í• ê¹Œ...", "protect", JOptionPane.QUESTION_MESSAGE,
 				null, selections, "user1");
 		return protect;
 	}
