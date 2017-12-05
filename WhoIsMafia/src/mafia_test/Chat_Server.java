@@ -470,9 +470,9 @@ public class Chat_Server {
 						for (PrintWriter writer : writers) {
 							writer.println("MATRIX" + temp);
 						}
-					} else if (input.startsWith("object_clicked")) {
+					} else if (game_start_flag == 1 && input.startsWith("object_clicked")) {
 						clickedNum++;
-						if (game_start_flag == 1 && clickedNum == current_client) {
+						if (clickedNum == current_client) {
 							for (PrintWriter writer : writers) {
 								writer.println("T_START");
 							}
