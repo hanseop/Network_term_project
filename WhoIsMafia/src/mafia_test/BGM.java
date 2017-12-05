@@ -1,5 +1,3 @@
-package net_hw2;
-
 import sun.audio.*;
 import java.io.*;
 
