@@ -1,13 +1,11 @@
-package net_hw2;
-
-/*¼­¹ö ÄÚµå ÁÖ¼®À» ÀÏ´Ü Àû¾î º» »óÅÂ.
- * ¼­¹ö°¡ ÇÒ ÀÏ
- * 1. ÇöÀç ÄÚµå Á¤¸®ÇÏ±â, ÇÔ¼ö·Î±¸¼ºÇÏ¸éÁÁÀ»°Í°°¾Æ¿ä
- * 2. ²À! À¯Àú ÀÌ¸§ÀÌ ´ã±ä setÀ» Å¬¶óÀÌ¾ğÆ®¿¡°Ô º¸³»ÁÖ¾î¾ßÇÔ.
- *      ±×·¡¾ß¸¸ ÅõÇ¥ÇÒ¶§ ÆĞ³Î¿¡¼­ ÈÄº¸¸¦ °í¸¦ ¼ö ÀÖ°ÔÇÒ ¼ö ÀÖÀ½.
- * 3. Å¬¶óÀÌ¾ğÆ®µéÀÌ ÅõÇ¥¿¡¼­ »ÌÀº ÈÄº¸¸¦ ³Ñ°Ü¹ŞÀ¸¸é, killÇÒ »ç¶÷À» Ã£°í, °üÀü ½ÃÅ³Áö ¾Æ¿ô ½ÃÅ³Áö ÄÚµå Â¥Áà¾ßµÊ.
- * 4. ÅõÇ¥¸¦ ¾ğÁ¦ ½ÃÇàÇÒ°ÇÁö 5ºĞ Å¸ÀÌ¸Ó¸¦ Àê °ÍÀÎµ¥, Å¸ÀÌ¸Ó¸¦ ¾ğÁ¦ ½ÃÀÛÇÒÁö ³Ö¾îÁà¾ßµÊ.
- *      Å¸ÀÌ¸Ó¸¦ Â¥³õÀº ÇÔ¼ö´Â ±êÇãºê¿¡ testYet_timer¶ó°í ¾÷·ÎµåÇØµÎ¾úÀ½.   
+/*ì„œë²„ ì½”ë“œ ì£¼ì„ì„ ì¼ë‹¨ ì ì–´ ë³¸ ìƒíƒœ.
+ * ì„œë²„ê°€ í•  ì¼
+ * 1. í˜„ì¬ ì½”ë“œ ì •ë¦¬í•˜ê¸°, í•¨ìˆ˜ë¡œêµ¬ì„±í•˜ë©´ì¢‹ì„ê²ƒê°™ì•„ìš”
+ * 2. ê¼­! ìœ ì € ì´ë¦„ì´ ë‹´ê¸´ setì„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë³´ë‚´ì£¼ì–´ì•¼í•¨.
+ *      ê·¸ë˜ì•¼ë§Œ íˆ¬í‘œí• ë•Œ íŒ¨ë„ì—ì„œ í›„ë³´ë¥¼ ê³ ë¥¼ ìˆ˜ ìˆê²Œí•  ìˆ˜ ìˆìŒ.
+ * 3. í´ë¼ì´ì–¸íŠ¸ë“¤ì´ íˆ¬í‘œì—ì„œ ë½‘ì€ í›„ë³´ë¥¼ ë„˜ê²¨ë°›ìœ¼ë©´, killí•  ì‚¬ëŒì„ ì°¾ê³ , ê´€ì „ ì‹œí‚¬ì§€ ì•„ì›ƒ ì‹œí‚¬ì§€ ì½”ë“œ ì§œì¤˜ì•¼ë¨.
+ * 4. íˆ¬í‘œë¥¼ ì–¸ì œ ì‹œí–‰í• ê±´ì§€ 5ë¶„ íƒ€ì´ë¨¸ë¥¼ ì´ ê²ƒì¸ë°, íƒ€ì´ë¨¸ë¥¼ ì–¸ì œ ì‹œì‘í• ì§€ ë„£ì–´ì¤˜ì•¼ë¨.
+ *      íƒ€ì´ë¨¸ë¥¼ ì§œë†“ì€ í•¨ìˆ˜ëŠ” ê¹ƒí—ˆë¸Œì— testYet_timerë¼ê³  ì—…ë¡œë“œí•´ë‘ì—ˆìŒ.   
  * */
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +25,7 @@ import java.util.HashSet;
  *
  * @ PORT[int] : port number. @ names[String//HashSet] : hashSet about name of
  * players. @ writers[PrintWriter//HashSet] : hashset about
- * writer????????????????????? ¾î¶² ±â´ÉÀ» ÇÏ´Â º¯¼öÀÎÁö.... -> À¯ÀúÀÇ ÁÖ¼Ò¸¦ ¹Ş´Â HashSet(Áßº¹ Çã¿ë
+ * writer????????????????????? ì–´ë–¤ ê¸°ëŠ¥ì„ í•˜ëŠ” ë³€ìˆ˜ì¸ì§€.... -> ìœ ì €ì˜ ì£¼ì†Œë¥¼ ë°›ëŠ” HashSet(ì¤‘ë³µ í—ˆìš©
  * x) @ info[str,pw//HashMap] : hashmap about set including name and writer. @
  * max_client[int] : the maximum number of player, 7. @ client_count[int] :
  * number for counting players. @ vote[int] : array for storing number after
@@ -192,28 +190,28 @@ public class Chat_Server {
 							names.add(name);
 
 							for (PrintWriter writer : writers) { // if any user enters, memo in server's console.
-								// ¸Â³ª..??? -> »õ·Î¿î À¯Àú°¡ µé¾î¿Ã °æ¿ì Ã¤ÆÃÃ¢À¸·Î À¯Àúµé¿¡°Ô [name]
-								// enter¶ó°í ¾Ë·ÁÁÜ
-								writer.println("MESSAGE " + "\"" + name + "\"´ÔÀÌ °ÔÀÓÀÌ Âü¿©Çß½À´Ï´Ù.");
+								// ë§ë‚˜..??? -> ìƒˆë¡œìš´ ìœ ì €ê°€ ë“¤ì–´ì˜¬ ê²½ìš° ì±„íŒ…ì°½ìœ¼ë¡œ ìœ ì €ë“¤ì—ê²Œ [name]
+								// enterë¼ê³  ì•Œë ¤ì¤Œ
+								writer.println("MESSAGE " + "\"" + name + "\"ë‹˜ì´ ê²Œì„ì´ ì°¸ì—¬í–ˆìŠµë‹ˆë‹¤.");
 							}
 							break;
 						}
 						else {
-							System.out.println("Áßº¹");
-							for (PrintWriter writer : writers) writer.println("ERROR " + "ÀÌ¹Ì »ç¿ëÁßÀÎ ´Ğ³×ÀÓÀÔ´Ï´Ù.");
+							System.out.println("ì¤‘ë³µ");
+							for (PrintWriter writer : writers) writer.println("ERROR " + "ì´ë¯¸ ì‚¬ìš©ì¤‘ì¸ ë‹‰ë„¤ì„ì…ë‹ˆë‹¤.");
 						}
 					}
 				}
-				out.println("NAMEACCEPTED"); // if user enters own name, give check-message. ??? ->Å¬¶óÀÌ¾ğÆ®¿¡°Ô
-				// NAMEACCPETED¶ó´Â ÇÁ·ÎÅäÄİ¸Ş¼¼Áö¸¦ º¸³»ÁÜ ->À¯ÀúÀÇ Ã¤ÆÃÃ¢ È°¼ºÈ­ ½ÃÄÑÁÜ
-				writers.add(out); // ??? -> À¯ÀúÀÇ ÁÖ¼Ò¸¦ hashset¿¡ ÀúÀå
+				out.println("NAMEACCEPTED"); // if user enters own name, give check-message. ??? ->í´ë¼ì´ì–¸íŠ¸ì—ê²Œ
+				// NAMEACCPETEDë¼ëŠ” í”„ë¡œí† ì½œë©”ì„¸ì§€ë¥¼ ë³´ë‚´ì¤Œ ->ìœ ì €ì˜ ì±„íŒ…ì°½ í™œì„±í™” ì‹œì¼œì¤Œ
+				writers.add(out); // ??? -> ìœ ì €ì˜ ì£¼ì†Œë¥¼ hashsetì— ì €ì¥
 				user[client_count] = name; // store a name in array.
 				ID[client_count] = out; // store an ID in array.
 
 				client_count++; // for next users, do count++.
 
-				System.out.println(user[client_count - 1] + "´ÔÀÌ ÀÔÀåÇÏ¼Ì½À´Ï´Ù.");
-				System.out.println("ÇöÀç ÀÎ¿ø " + client_count + "¸í");
+				System.out.println(user[client_count - 1] + "ë‹˜ì´ ì…ì¥í•˜ì…¨ìŠµë‹ˆë‹¤.");
+				System.out.println("í˜„ì¬ ì¸ì› " + client_count + "ëª…");
 
 				info.put(name, out);
 
@@ -224,7 +222,7 @@ public class Chat_Server {
 						writer.println("MESSAGE " + "game start");
 					}
 
-					// assign a job to player. ..? ¸Â´Â°Ç°¡..??
+					// assign a job to player. ..? ë§ëŠ”ê±´ê°€..??
 					for (int i = 0; i < max_client; i++) {
 						String temp = job[i];
 						job[i] = job[random[i]];
@@ -239,21 +237,21 @@ public class Chat_Server {
 						else if ((job[i].substring(0, job[i].indexOf(" "))).equals("doctor"))
 							doctor_index = i;
 					}
-					// tell a job to each players.? ÀÌ °úÁ¤ÀÌ ¸Â³ª..?--Á÷¾÷¹èÁ¤¹ŞÀº Á¤º¸¸¦ ¼ÒÄÏ¿¡ ´ã¾Æ Å¬¶óÀÌ¾ğÆ®¿¡°Ô ÁÖ¸é ÆË¾÷Ã¢À¸·Î
-					// ¾Ë·ÁÁÖ´Â °Ô ÁÁÀ» °Í °°À½...
+					// tell a job to each players.? ì´ ê³¼ì •ì´ ë§ë‚˜..?--ì§ì—…ë°°ì •ë°›ì€ ì •ë³´ë¥¼ ì†Œì¼“ì— ë‹´ì•„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì£¼ë©´ íŒì—…ì°½ìœ¼ë¡œ
+					// ì•Œë ¤ì£¼ëŠ” ê²Œ ì¢‹ì„ ê²ƒ ê°™ìŒ...
 					for (int i = 0; i < max_client; i++)
 						System.out.println(job[i]);
 				}
 
 				while (true) {
-					// ¿©±â¼­ºÎÅÍ ¾î¶² °úÁ¤ÀÎÁö Àß ¸ğ¸£°ÚÀ½...
+					// ì—¬ê¸°ì„œë¶€í„° ì–´ë–¤ ê³¼ì •ì¸ì§€ ì˜ ëª¨ë¥´ê² ìŒ...
 					String input = in.readLine();
 
 					if (input == null) { // if input is null,
 						return;
 					}
 
-					// whisper..?????? ÇÊ¿äÇÑ ÀÌÀ¯..??? -> PAÇÒ¶§ ¾²´ø ÄÚµå¸¦ ±×´ë·Î ½á¼­ ÀÖÀ½ »èÁ¦ÇØµµ ¹«¹æ
+					// whisper..?????? í•„ìš”í•œ ì´ìœ ..??? -> PAí• ë•Œ ì“°ë˜ ì½”ë“œë¥¼ ê·¸ëŒ€ë¡œ ì¨ì„œ ìˆìŒ ì‚­ì œí•´ë„ ë¬´ë°©
 					//else if (input.startsWith("<") && input.indexOf("/>") != -1) {
 					//	String whisper;
 					//	whisper = input.substring(1, input.indexOf("/>"));
@@ -271,9 +269,9 @@ public class Chat_Server {
 						//}
 
 					//}
-					// tell a job --¸í·É¾î¸¦ ½á¾ß¸¸ Á÷¾÷À» ¾Ë·ÁÁÖ´Â..??°Í º¸´Ù´Â ÀÏ¹æÀûÀ¸·Î ¾Ë·ÁÁÖ´Â°Ô ÁÁÀ» °Í °°¾Æ¿ä~
-					// Á÷¾÷¹èÁ¤¹ŞÀº Á¤º¸¸¦ ¼ÒÄÏ¿¡ ´ã¾Æ Å¬¶óÀÌ¾ğÆ®¿¡°Ô ÁÖ¸é ÆË¾÷Ã¢À¸·Î ¾Ë·ÁÁÖ´Â °Ô ÁÁÀ» °Í °°À½... !
-					// ÇöÀç ¼­¹ö¿¡ ±¸ÇöÇØ³õÀº ±â´ÉÀº gui¿Í ¿¬µ¿µÇÁö ¾Ê°í ¼ø¼ö ±â´É¸¸ ±¸ÇöÇØ ³õ¾Ò½À´Ï´Ù. ÃßÈÄ gui°¡ ¿Ï¼ºµÇ¸é ±¸Çö ¿¹Á¤
+					// tell a job --ëª…ë ¹ì–´ë¥¼ ì¨ì•¼ë§Œ ì§ì—…ì„ ì•Œë ¤ì£¼ëŠ”..??ê²ƒ ë³´ë‹¤ëŠ” ì¼ë°©ì ìœ¼ë¡œ ì•Œë ¤ì£¼ëŠ”ê²Œ ì¢‹ì„ ê²ƒ ê°™ì•„ìš”~
+					// ì§ì—…ë°°ì •ë°›ì€ ì •ë³´ë¥¼ ì†Œì¼“ì— ë‹´ì•„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì£¼ë©´ íŒì—…ì°½ìœ¼ë¡œ ì•Œë ¤ì£¼ëŠ” ê²Œ ì¢‹ì„ ê²ƒ ê°™ìŒ... !
+					// í˜„ì¬ ì„œë²„ì— êµ¬í˜„í•´ë†“ì€ ê¸°ëŠ¥ì€ guiì™€ ì—°ë™ë˜ì§€ ì•Šê³  ìˆœìˆ˜ ê¸°ëŠ¥ë§Œ êµ¬í˜„í•´ ë†“ì•˜ìŠµë‹ˆë‹¤. ì¶”í›„ guiê°€ ì™„ì„±ë˜ë©´ êµ¬í˜„ ì˜ˆì •
 					else if (input.startsWith("/") && input.indexOf("job") != -1) {
 						int temp_index = 0;
 
@@ -286,7 +284,7 @@ public class Chat_Server {
 						sender.println("MESSAGE " + "your job is "
 								+ job[temp_index].substring(0, job[temp_index].indexOf(" ")));
 					}
-					// job°ú roleÀÇ Â÷ÀÌ??? job : Á÷¾÷ role : ¿ªÇÒ(´É·Â)
+					// jobê³¼ roleì˜ ì°¨ì´??? job : ì§ì—… role : ì—­í• (ëŠ¥ë ¥)
 					else if (input.startsWith("/") && input.indexOf("role") != -1) {
 						int temp_index = 0;
 						for (int i = 0; i < client_count; i++) {
@@ -297,10 +295,10 @@ public class Chat_Server {
 						sender.println(
 								"MESSAGE " + "your role is " + job[temp_index].substring(job[temp_index].indexOf(" ")));
 					}
-					// ÀÌ¸§??? ¹¹ÇÏ´Â ºÎºĞÀÎÁö Àß ¸ğ¸£°Ú¾î¿ä...
-					// 11¿ù24ÀÏ ¸ğÀÓ¶§ ¸»¾¸ÇÏ¼Ì´ø ÅõÇ¥¸¦ ÇÒ¶§ ¼­¹ö¿¡¼­ Å¬¶óÀÌ¾ğÆ®µéÀÇ ÀÌ¸§À» ¹Ş¾Æ¿À±â À§ÇÑ °úÁ¤ÀÔ´Ï´Ù. À¯Àú°¡ Ã¤ÆÃÃ¢¿¡ /nameÀÌ¶ó°í Ä¡¸é
-					// ÇöÀç µé¾î¿Í ÀÖ´Â À¯ÀúµéÀÇ ÀÌ¸§ÀÌ guiÆË¾÷Ã¢À¸·Î ¶ä
-					// ¾ÆÁ÷ ¹Ì¿Ï¼º
+					// ì´ë¦„??? ë­í•˜ëŠ” ë¶€ë¶„ì¸ì§€ ì˜ ëª¨ë¥´ê² ì–´ìš”...
+					// 11ì›”24ì¼ ëª¨ì„ë•Œ ë§ì”€í•˜ì…¨ë˜ íˆ¬í‘œë¥¼ í• ë•Œ ì„œë²„ì—ì„œ í´ë¼ì´ì–¸íŠ¸ë“¤ì˜ ì´ë¦„ì„ ë°›ì•„ì˜¤ê¸° ìœ„í•œ ê³¼ì •ì…ë‹ˆë‹¤. ìœ ì €ê°€ ì±„íŒ…ì°½ì— /nameì´ë¼ê³  ì¹˜ë©´
+					// í˜„ì¬ ë“¤ì–´ì™€ ìˆëŠ” ìœ ì €ë“¤ì˜ ì´ë¦„ì´ guiíŒì—…ì°½ìœ¼ë¡œ ëœ¸
+					// ì•„ì§ ë¯¸ì™„ì„±
 					/***************************************
 					 * modified
 					 *******************************************/
@@ -347,7 +345,7 @@ public class Chat_Server {
 						if (name.equals(user[police_index]))
 							police.println("JOB" + temp);
 					} else if (input.startsWith("/") && input.indexOf("kill") != -1) {
-						System.out.println("¸¶ÇÇ¾Æ³Ä?");
+						System.out.println("ë§ˆí”¼ì•„ëƒ?");
 						PrintWriter mafia = info.get(name);
 						String temp = null;
 						for (int i = 0; i < max_client; i++) {
@@ -453,8 +451,8 @@ public class Chat_Server {
 						police.println("IS_MAFIA?" + user[temp_index] + "' job is "
 								+ job[temp_index].substring(0, job[temp_index].indexOf(" ")));
 					}
-					// ¹¹ÇÏ´Â ºÎºĞÀÎÁö Àß ¸ğ¸£°Ú¾î¿ä..¤Ğ¤Ğ
-					// À¯Àú°¡ Ã¤ÆÃÀ» Ä¡¸é ´Ù¸¥ À¯Àúµé¿¡°Ô º¸³»ÁÖ´Â ±â´É
+					// ë­í•˜ëŠ” ë¶€ë¶„ì¸ì§€ ì˜ ëª¨ë¥´ê² ì–´ìš”..ã… ã… 
+					// ìœ ì €ê°€ ì±„íŒ…ì„ ì¹˜ë©´ ë‹¤ë¥¸ ìœ ì €ë“¤ì—ê²Œ ë³´ë‚´ì£¼ëŠ” ê¸°ëŠ¥
 
 					else if (input.startsWith("/") && input.indexOf("matrix") != -1) {
 						String temp = null;
@@ -537,7 +535,7 @@ public class Chat_Server {
 					}
 					/*****************************************************************************/
 				}
-			} catch (IOException e) { // °©ÀÚ±â catch°¡ ³ª¿Â ÀÌÀ¯..? -> ¿¡·¯ ¹ß»ı½Ã
+			} catch (IOException e) { // ê°‘ìê¸° catchê°€ ë‚˜ì˜¨ ì´ìœ ..? -> ì—ëŸ¬ ë°œìƒì‹œ
 				System.out.println(e);
 			} finally { // if client is out, alert.
 				if (name != null) {
@@ -547,7 +545,7 @@ public class Chat_Server {
 					names.remove(name);
 					info.remove(name);
 					client_count--;
-					System.out.println("ÇÑ¸í ³ª°¬´Ù " + client_count);
+					System.out.println("í•œëª… ë‚˜ê°”ë‹¤ " + client_count);
 				}
 				if (out != null) {
 					writers.remove(out);
@@ -560,7 +558,7 @@ public class Chat_Server {
 		}
 	}
 
-	// Å¬¶óÀÌ¾ğÆ® ÀüºÎ¿¡°Ô ½Ã½ºÅÛ ¸Ş¼¼Áö º¸³»´Â ¸Ş¼Òµå
+	// í´ë¼ì´ì–¸íŠ¸ ì „ë¶€ì—ê²Œ ì‹œìŠ¤í…œ ë©”ì„¸ì§€ ë³´ë‚´ëŠ” ë©”ì†Œë“œ
 	public static void sendToallclient(String mssg) {
 		for (PrintWriter writer : writers) {
 			writer.println(mssg);
