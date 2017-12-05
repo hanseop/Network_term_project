@@ -17,11 +17,10 @@ public class Chat_Server {
 	private static int max_client = 7;
 	private static int max_object = 10;
 	private static int client_count = 0;
-	private static int matrix_size = 7;
-	private static int num_of_clue = 7;
 	private static int selectNum = 2;
-	private static int storedIndex = 0;
+	private static int objectCount = 0;
 
+	private static int count = 0;
 	private static int timer_flag = 0;
 	private static int clickedNum = 0;
 	private static int current_client = max_client;
@@ -346,27 +345,7 @@ public class Chat_Server {
 								writer.println("D_START" + "Doctor saved victim");
 							}
 						}
-					}
-					// else if (input.startsWith("/") && input.indexOf("police") != -1) {
-					// PrintWriter police = info.get(name);
-					// String temp = null;
-					// for (int i = 0; i < max_client; i++) {
-					// if (kicked[i] != 0 && !user[i].equals(user[police_index])) {
-					// if (temp == null) {
-					// temp = user[i];
-					// } else {
-					// temp += ("," + user[i]);
-					// }
-					// }
-					// }
-					// System.out.println(temp);
-					// if (name.equals(user[police_index])) {
-					// police.println("JOB" + temp);
-					// } else {
-					// police.println("MESSAGE " + "You are not police");
-					// }
-					// }
-					else if (input.startsWith("/") && input.indexOf("is_he_mafia?") != -1) {
+					} else if (input.startsWith("/") && input.indexOf("is_he_mafia?") != -1) {
 						PrintWriter police = info.get(user[police_index]);
 						String selected = input.substring(13);
 						int temp_index = 9999;
@@ -385,20 +364,35 @@ public class Chat_Server {
 							if (name.equals(user[i]))
 								user_index = i;
 						}
+						if (objectCount == max_object - 1) {
+							for (PrintWriter writer : writers) {
+								writer.println("T_START");
+							}
+						}
 						if (object_flag[msg_index] == 0 && isClicked[user_index] == 0) {
-							isClicked[user_index] = 1;
-							object_flag[msg_index] = 1;
-							clickedNum++;
-							PrintWriter sendObject = info.get(name);
+							for (int i = 0; i < max_client; i++) {
+								if (isClicked[i] == 0 && kicked[i] != 0) {
+									user_index = i;
+									break;
+								}
+							}
+							if (user[user_index].equals(name)) {
+								isClicked[user_index] = 1;
+								object_flag[msg_index] = 1;
+								clickedNum++;
+								count++;
+								objectCount++;
+								PrintWriter sendObject = info.get(name);
 
-							System.out.println(msg_index);
-							sendObject.println("object_description" + object_msg[msg_index]);
-							if (clickedNum == current_client) {
+								System.out.println(msg_index);
+								sendObject.println("object_description" + object_msg[msg_index]);
+							}
+
+							if (clickedNum == selectNum) {
 								for (PrintWriter writer : writers) {
 									writer.println("T_START");
 								}
-								for (int i = 0; i < max_client; i++)
-									isClicked[i] = 0;
+
 								clickedNum = 0;
 							}
 						} else if (object_flag[msg_index] == 1 && isClicked[user_index] == 0) {
@@ -412,6 +406,11 @@ public class Chat_Server {
 						for (PrintWriter writer : writers) {
 							writer.println("MESSAGE " + name + ": " + input);
 						}
+					}
+					if (count == current_client) {
+						for (int i = 0; i < max_client; i++)
+							isClicked[i] = 0;
+						count = 0;
 					}
 
 					if (is_vote == client_count) {
@@ -469,9 +468,6 @@ public class Chat_Server {
 				System.out.println(e);
 			} finally {
 				if (name != null) {
-					// for (PrintWriter writer : writers) {
-					// writer.println("MESSAGE " + "[" + name + "] exit");
-					// }
 					names.remove(name);
 					info.remove(name);
 					client_count--;

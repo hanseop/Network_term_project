@@ -53,7 +53,7 @@ public class Send_socket implements Runnable {
 	/* 아래 run 함수의 int page는 메인화면에서 입장할 때 만 유저의 닉네임을 받고 싶어 만든 변수입니다. */
 	void runChat(String[] players, int page) throws IOException {
 		// Make connection and initialize streams
-		int[][] matrix = new int[matrixSize][matrixSize];
+
 		String serverAddress = new String(getServerAddress());
 		JFrame actionFrame = new JFrame();
 		Socket socket = new Socket(serverAddress, 9001);
@@ -105,16 +105,6 @@ public class Send_socket implements Runnable {
 				messageArea.append("\t\t[SYSTEM MESSAGE]" + "\n");
 				messageArea.append("    \t\t낮이 되었습니다" + "\n");
 				messageArea.append(line.substring(7) + "\n");
-			} else if (line.startsWith("MATRIX")) {
-				int count = 0;
-				line = line.substring(6);
-				String[] temp = line.split(" ");
-				for (int i = 0; i < matrixSize; i++) {
-					for (int j = 0; j < matrixSize; j++) {
-						matrix[i][j] = Integer.parseInt(temp[count]);
-						count++;
-					}
-				}
 			} else if (line.startsWith("T_START")) {
 				messageArea.append("\t\t[SYSTEM MESSAGE]" + "\n");
 				messageArea.append("          \t사용자가 모두 오브젝트를 클릭 하였습니다" + "\n");
