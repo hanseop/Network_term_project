@@ -831,9 +831,6 @@ public class Chat_Server {
                      }
                   }
                   
-                  /*
-                   * 한번 더 검사해서 동률이  있는지 찾아냄
-                   */
                   //check whether there is tie or not
                   for (int i = 0; i < max_client; i++) {
                      if (count == vote[i] && i != temp_index)
