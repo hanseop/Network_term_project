@@ -58,9 +58,9 @@ public class Layout extends JFrame {
 			Thread t1 = new Thread(new RoomGUI());
 			Thread t2 = new Thread(new Send_socket());
 			t1.start();
-			if(t2.getState() == Thread.State.NEW)
+			if (t2.getState() == Thread.State.NEW)
 				t2.start();
-			else{
+			else {
 				Thread t = new Thread(new Send_socket());
 				t.start();
 			}

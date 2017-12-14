@@ -1,12 +1,5 @@
-/*ì„œë²„ ì½”ë“œ ì£¼ì„ì„ ì¼ë‹¨ ì ì–´ ë³¸ ìƒíƒœ.
- * ì„œë²„ê°€ í•  ì¼
- * 1. í˜„ì¬ ì½”ë“œ ì •ë¦¬í•˜ê¸°, í•¨ìˆ˜ë¡œêµ¬ì„±í•˜ë©´ì¢‹ì„ê²ƒê°™ì•„ìš”
- * 2. ê¼­! ìœ ì € ì´ë¦„ì´ ë‹´ê¸´ setì„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë³´ë‚´ì£¼ì–´ì•¼í•¨.
- *      ê·¸ë˜ì•¼ë§Œ íˆ¬í‘œí• ë•Œ íŒ¨ë„ì—ì„œ í›„ë³´ë¥¼ ê³ ë¥¼ ìˆ˜ ìˆê²Œí•  ìˆ˜ ìˆìŒ.
- * 3. í´ë¼ì´ì–¸íŠ¸ë“¤ì´ íˆ¬í‘œì—ì„œ ë½‘ì€ í›„ë³´ë¥¼ ë„˜ê²¨ë°›ìœ¼ë©´, killí•  ì‚¬ëŒì„ ì°¾ê³ , ê´€ì „ ì‹œí‚¬ì§€ ì•„ì›ƒ ì‹œí‚¬ì§€ ì½”ë“œ ì§œì¤˜ì•¼ë¨.
- * 4. íˆ¬í‘œë¥¼ ì–¸ì œ ì‹œí–‰í• ê±´ì§€ 5ë¶„ íƒ€ì´ë¨¸ë¥¼ ì´ ê²ƒì¸ë°, íƒ€ì´ë¨¸ë¥¼ ì–¸ì œ ì‹œì‘í• ì§€ ë„£ì–´ì¤˜ì•¼ë¨.
- *      íƒ€ì´ë¨¸ë¥¼ ì§œë†“ì€ í•¨ìˆ˜ëŠ” ê¹ƒí—ˆë¸Œì— testYet_timerë¼ê³  ì—…ë¡œë“œí•´ë‘ì—ˆìŒ.   
- * */
+package mafia_test;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,80 +9,125 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
 
-/**********************************************************************************************************
- * class CharServer
- * 
- * Wait until the 7 players gather. After gathering, assign a job to all
- * players. Alert the starting of game. After 5 minutes from starting, tell
- * players(clients) to vote to kill.
- *
- * @ PORT[int] : port number. @ names[String//HashSet] : hashSet about name of
- * players. @ writers[PrintWriter//HashSet] : hashset about
- * writer????????????????????? ì–´ë–¤ ê¸°ëŠ¥ì„ í•˜ëŠ” ë³€ìˆ˜ì¸ì§€.... -> ìœ ì €ì˜ ì£¼ì†Œë¥¼ ë°›ëŠ” HashSet(ì¤‘ë³µ í—ˆìš©
- * x) @ info[str,pw//HashMap] : hashmap about set including name and writer. @
- * max_client[int] : the maximum number of player, 7. @ client_count[int] :
- * number for counting players. @ vote[int] : array for storing number after
- * voting. @ user[string] : array of user. @ ID[printWriter] : array of user's
- * ID. @ job[string] : array of job for players. @ random[int] : for allocating
- * jobs to players, initial the information in array.
- **********************************************************************************************************/
-
 public class Chat_Server {
-	private static final int PORT = 9001;
-	private static HashSet<String> names = new HashSet<String>();
-	private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
-	private static HashMap<String, PrintWriter> info = new HashMap<String, PrintWriter>();
-	private static int max_client = 7;
-	private static int client_count = 0;
-	private static int matrix_size = 7;
-	private static int num_of_clue = 7;
+	private static final int PORT = 9001; // Æ÷Æ®¹øÈ£
+	private static HashSet<String> names = new HashSet<String>(); // ÀÌ¸§À» ÀúÀåÇÏ´Â hashset -> Áßº¹ ¹æÁö
+	private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>(); // Å¬¶óÀÌ¾ğÆ® ÁÖ¼Ò¸¦ ÀúÀåÇÏ´Â hashset -> Áßº¹ ¹æÁö
+	private static HashMap<String, PrintWriter> info = new HashMap<String, PrintWriter>(); // ÀÌ¸§°ú Å¬¶óÀÌ¾ğÆ® ÁÖ¼Ò¸¦ ¸ÅÇÎÇØÁÖ´Â
+																							// hashmap
+	private static int max_client = 7; // ÃÖ´ë Å¬¶óÀÌ¾ğÆ® ¼ö
+	private static int max_object = 10; // ¿ÀºêÁ§Æ®ÀÇ ¼ö(´Ü¼­)
+	private static int client_count = 0; // ÇöÀç µé¾î¿Â À¯ÀúµéÀÇ ¼ö
 
-	/**************************** modified *******************************/
-	private static int timer_flag = 0;
-	private static int clickedNum = 0;
-	private static int current_client = max_client;
-	private static int is_vote = 0;
-	private static int mafia_index = 0;
-	private static int police_index = 0;
-	private static int doctor_index = 0;
-	private static int victim_index = 0;
-	private static int game_start_flag = 0;
-	private static int[] selectedByMafia = new int[max_client];
-	private static int[] kicked = new int[max_client];
-	private static int[] vote = new int[max_client];
-	private static int[][] matrix = new int[matrix_size][matrix_size];
-	/**************************************************************/
+	private static int timer_flag = 0; // timeoutÀÌ ¿Â Å¬¶óÀÌ¾ğÆ®µéÀÇ ¼ö
+	private static int clickedNum = 0; // ÇÑ ÅÏ¿¡ ¿ÀºêÁ§Æ®¸¦ ´©¸¦ ¼öÀÖ´Â À¯ÀúµéÀÇ ¼ö
+	private static int current_client = max_client; // ÇöÀç À¯ÀúµéÀÇ ¼ö // client_count¿Í ´Ù¸¥ Á¡ : client_count´Â À¯ÀúµéÀÌ µé¾î¿Ã ¶§
+	// countµÇ¾î¼­ max_client°ú °°À»¶§ °ÔÀÓÀÌ ½ÃÀÛµÈ´Ù. ÇÏÁö¸¸ current client´Â kickÀÌ µÇÁö¾ÊÀº À¯ÀúµéÀÇ ¼ö¸¦
+	// ³ªÅ¸³½´Ù
 
-	private static String[] user = new String[max_client];
-	private static PrintWriter[] ID = new PrintWriter[max_client];
-	private static String[] job = { "citizen I'm citizen", "doctor I'm doctor", "citizen I'm citizen",
-			"mafia I'm mafia", "citizen I'm citizen", "police I'm police", "citizen I'm citizen" };
+	private static int is_vote = 0; // ÅõÇ¥¸¦ ÇÑ À¯ÀúµéÀÇ ¼ö current_client ¿Í °°¾ÆÁö¸é Ã³ÇüÇÔ
+	private static int mafia_index = 0; // ¸¶ÇÇ¾ÆÀÇ ÀÎµ¦½º
+	private static int police_index = 0; // °æÂûÀÇ ÀÎµ¦½º
+	private static int doctor_index = 0; // ÀÇ»çÀÇ ÀÎµ¦½º
+	private static int victim_index = 0; // ¸¶ÇÇ¾Æ°¡ Á×ÀÌ·Á°í ÇÏ´Â Èñ»ıÀÚÀÇ ÀÎµ¦½º
+	private static int[] temp = new int[] { -1, -1, -1 }; // room1°ú room2¿¡ userÀÇ ÀÌ¸§µéÀ» ³ÖÀ»¶§, ÀÎµ¦½º°¡ ÈÄ¡Áö ¾Ê°Ô ÇØÁÖ´Â ¹è¿­
 
-	private static int[] random = { -1, -1, -1, -1, -1, -1, -1 };
+	private static boolean[] selectedByMafia = new boolean[max_client]; // ¸¶ÇÇ¾Æ¿¡°Ô ¼±ÅÃµÇ¾ú´ÂÁö ¾ÈµÇ¾î¤Ã¤¶´ÂÁö¸¦ Ç¥½ÃÇÔ false¸é ¼±ÅÃµÇÁö ¾ÊÀº°Í,
+																		// true¸é ¼±ÅÃµÈ°Í
+	private static boolean[] kicked = new boolean[max_client]; // °­Åğ µÇ¾ú´ÂÁö ¾ÈµÇ¾ú´ÂÁö Ç¥½Ã false¸é °­ÅğµÇÁö¾ÊÀº °Í, true¸é °­Åğ
 
-	private static void initializeMatrix(int[][] matrix) {
-		for (int i = 0; i < mafia_index; i++) {
-			for (int j = 0; j < matrix_size; j++)
-				matrix[i][j] = 0;
+	private static int[] vote = new int[max_client]; // À¯Àúº°·Î ÅõÇ¥ ´çÇÑ¼ö?
+
+	private static String[] user = new String[max_client]; // À¯Àú ÀÌ¸§ ÀúÀå -> ¿Ö À§¿¡ hashsetÀÌ ÀÖ´Âµ¥ ¶Ç ¾²´À³Ä? -> ÀÎµ¦½º·Î ¸ÅÇÎÇÏ±â À§ÇØ
+	private static PrintWriter[] ID = new PrintWriter[max_client]; // À¯Àú ÁÖ¼Ò ÀúÀå -> ¿Ö À§¿¡ hashsetÀÌ ÀÖ´Âµ¥ ¶Ç ¾²´À³Ä? -> ÀÎµ¦½º·Î ¸ÅÇÎÇÏ±â
+																	// À§ÇØ
+	private static String story = "Eight people went to the villa for vacation./"
+			+ "Then two of them fought and one person died./"
+			+ "You have to find the clue and find the culprit by voting."; // ½ºÅä¸® ÀúÀå
+	private static String totalJob = ""; // ¸ğµç Á÷¾÷µéÀ» ¾Ë·ÁÁÜ -> story¿Í °°ÀÌ ³ª¿È(¹öÆ°)
+	private static String[] job = { "½Ã¹Î ½Ã¹ÎÀÔ´Ï´Ù", "ÀÇ»ç ÀÇ»çÀÔ´Ï´Ù", "½Ã¹Î ½Ã¹ÎÀÔ´Ï´Ù", "¸¶ÇÇ¾Æ ¸¶ÇÇ¾ÆÀÔ´Ï´Ù", "½Ã¹Î ½Ã¹ÎÀÔ´Ï´Ù", "°æÂû °æÂûÀÔ´Ï´Ù",
+			"½Ã¹Î ½Ã¹ÎÀÔ´Ï´Ù" }; // Á÷¾÷ ÀúÀå ¹è¿­
+
+	private static int[] random = { -1, -1, -1, -1, -1, -1, -1 }; // index¸¦ ·£´ıÈ­ ÇÏ±â À§ÇØ¼­ random ¾î·¹ÀÌ¸¦ ¸¸µé¾úÀ½ -> ÀÌ¶ÇÇÑ ÀÎµ¦½º·Î ¸ÅÇÎ
+
+	private static int[] footSize = { 245, 250, 255, 260, 265, 270, 275 };
+	private static int selectNum = 3; // ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃÇÒ¼öÀÖ´Â À¯ÀúµéÀÇ ¼ö
+	private static int objectCount = 0; // ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃÇÑ ¼ö (ÀüÃ¼)
+	private static int[] canSelect = new int[selectNum]; // À¯Àúº°·Î ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃÇÒ¼öÀÖ´À´Ï ¾ø´ÂÁö Ç¥½Ã
+	private static boolean[] isClicked = new boolean[max_client]; // À¯Àú°¡ ¿ÀºêÁ§Æ®¸¦ Å¬¸¯Çß´ÂÁö Å¬¸¯ÇÏÁö ¾Ê¾Ò´ÂÁö Ç¥½Ã
+	private static boolean[] object_flag = new boolean[max_object]; // ÇØ´ç ¿ÀºêÁ§Æ®°¡ ¼±ÅÃµÇ¾ú´ÂÁö ¾ÈµÇ¾ú´ÂÁö ÀúÀå
+	private static String[] object_msg = { "°æÂû¿¡ ´ëÇÑ Á¤º¸", "ÀÇ»ç¿¡ ´ëÇÑ Á¤º¸", "¹ßÀÚ±¹ÀÌ ¹æ 1·Î ÀÌ¾îÁ® ÀÖ´Ù.", "¸¶ÇÇ¾Æ ¹æ¿¡ ´ëÇÑ Á¤º¸",
+			"¸¶ÇÇ¾Æ°¡ ¾ø´Â ¹æ¿¡ ´ëÇÑ Á¤º¸", "ÀüÃ¼ ¹ß»çÀÌÁî", "¸¶ÇÇ¾Æ ¹ß»çÀÌÁî", "¿À´Ã ¾ß½ÄÀ¸·Î ¶ó¸éÀÌ ³ª¿Â´Ù°í ÇÑ´Ù", "ÅÒÇÁ·ÎÁ§Æ®°¡ ³Ê¹« ¸¹´Ù", "¾îÁ¦ Á®³ËÀº ¸ÀÀÖ¾ú´Ù." };
+
+	/*
+	 * ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃÇÒ ¼ö ÀÖ´Â »ç¶÷µéÀ» °í¸£´Â ÇÔ¼ö
+	 */
+	private static void objectPerson() {
+		int count = 0;
+		while (true) {
+			int client_value = (int) (Math.random() * max_client); // client_value¿¡ 0~6±îÁö ·£´ı º¯¼ö ÁöÁ¤
+			int cnt = 0;
+
+			/*
+			 * canSelect ¾î·¹ÀÌ ÀüÃ¼ °ª¿¡¼­ client_value¿Í °°Àº °ªÀÌ ÀÖ´ÂÁö ¾ø´ÂÁö È®ÀÎÇÔ, °°Àº °ªÀÌ ÀÖÀ¸¸é cntº¯¼ö¸¦ ++ Áï
+			 * cnt º¯¼ö°¡ 0ÀÌ ¾Æ´Ï¶ó´Â ¸»Àº Áßº¹µÇ´Â º¯¼ö°¡ ÀÖ´Ù´Â °Í
+			 */
+			for (int i = 0; i < selectNum; i++) {
+				if (client_value == canSelect[i])
+					cnt++;
+			}
+
+			/*
+			 * cnt°¡ 0ÀÌ´Ù -> Áßº¹µÇ´Â °ªÀÌ ¾ø´Ù. kicked[client_value]°¡ falseÀÎ °æ¿ì -> ¿ÀºêÁ§Æ®¸¦ »ÌÀ» »ç¶÷ÀÇ
+			 * index¸¦ client_value°ªÀ¸·Î ÇÏ´Âµ¥, false¶ó´Â °ÍÀº ÇØ´ç À¯Àú°¡ °­Åğ´çÇÏÁö ¾Ê¾Ò´Ù´Â °ÍÀÌ´Ù.
+			 */
+			if (cnt == 0 && kicked[client_value] == false) {
+				canSelect[count] = client_value;
+				count++;
+			}
+
+			/*
+			 * ¸¸¾à 3¸íÀÇ »ç¶÷ÀÌ ¿ÀºêÁ§Æ®¸¦ ´Ù °í¸¥´Ù¸é
+			 */
+			if (count == selectNum)
+				break;
 		}
 	}
 
-	/* initialize the informations of vote, user and ID */
-	private static void initialize(int[] vote, int[] kicked, String[] user, PrintWriter[] ID) {
+	/*
+	 * º¯¼öµéÀ» ÃÊ±âÈ­ ÇÔ
+	 */
+	private static void initialize() {
 		for (int i = 0; i < max_client; i++) {
-			/**************************** modified *******************************/
-			kicked[i] = 1;
-			selectedByMafia[i] = 0;/**************************************************************/
+			kicked[i] = false;
+			selectedByMafia[i] = false;
 			vote[i] = 0;
+			isClicked[i] = false;
 			user[i] = "null";
 			ID[i] = null;
 		}
+
+		for (int i = 0; i < selectNum; i++) {
+			canSelect[i] = 9999;
+		}
+
+		for (int i = 0; i < max_object; i++)
+			object_flag[i] = true;
+
+		/*
+		 * story¹öÆ°À» ´©¸£¸é ³ª¿À´Â Á¤º¸
+		 */
+		totalJob = "," + job[0].substring(0, job[0].indexOf(" ")) + "," + job[0].substring(job[0].indexOf(" ") + 1)
+				+ "," + job[1].substring(0, job[1].indexOf(" ")) + "," + job[1].substring(job[1].indexOf(" ") + 1) + ","
+				+ job[3].substring(0, job[3].indexOf(" ")) + "," + job[3].substring(job[3].indexOf(" ") + 1) + ","
+				+ job[5].substring(0, job[5].indexOf(" ")) + "," + job[5].substring(job[5].indexOf(" ") + 1);
 	}
 
-	/* assign a job to players randomly */
-	private static void randomArray(int[] random, int[][] matrix) {
+	/*
+	 * random ¾î·¹ÀÌ¿¡ ·£´ı°ªÀ» Áßº¹µÇÁö¾Ê°Ô ÀúÀå(0~6) ex : 1 5 3 6 2 4 0
+	 */
+	private static void randomArray() {
 		int index = 0;
-		int matrix_count = 0;
 		while (true) {
 			int client_value = (int) (Math.random() * max_client);
 			int cnt = 0;
@@ -104,44 +142,105 @@ public class Chat_Server {
 			if (index == max_client)
 				break;
 		}
-
-		while (true) {
-			int matrix_value_column = (int) (Math.random() * matrix_size);
-			int matrix_value_row = (int) (Math.random() * matrix_size);
-			if (matrix[matrix_value_column][matrix_value_row] == 0) {
-				matrix[matrix_value_column][matrix_value_row] = 1;
-				matrix_count++;
-			}
-
-			if (matrix_count == matrix_size)
-				break;
-		}
 	}
 
+	/*
+	 * ÁÖ¿ä Á÷¾÷µéÀÇ ÀÎµ¦½º ÀúÀå
+	 */
 	public static void storeIndex() {
 		for (int i = 0; i < max_client; i++) {
-			if ((job[i].substring(0, job[i].indexOf(" "))).equals("mafia"))
+			if ((job[i].substring(0, job[i].indexOf(" "))).equals("¸¶ÇÇ¾Æ"))
 				mafia_index = i;
-			else if ((job[i].substring(0, job[i].indexOf(" "))).equals("police"))
+			else if ((job[i].substring(0, job[i].indexOf(" "))).equals("°æÂû"))
 				police_index = i;
-			else if ((job[i].substring(0, job[i].indexOf(" "))).equals("doctor"))
+			else if ((job[i].substring(0, job[i].indexOf(" "))).equals("ÀÇ»ç"))
 				doctor_index = i;
 		}
 	}
 
-	/* assign a job and intialize information. Then, go to handler. */
+	/*
+	 * °æÂû°ú ÀÇ»ç¿¡ ´ëÇÑ ¿ÀºêÁ§Æ® ¸Ş¼¼Áö ¼öÁ¤
+	 */
+	private static void assignClue_pol_doc() {
+		object_msg[0] = "¼ÒÆÄ Æ´»õ¿¡¼­ " + user[police_index] + "ÀÇ °æÂû ¹îÁö¸¦ º¸¾Ò´Ù.";
+		object_msg[1] = "ÇÇ¾Æ³ë ¿·¿¡º´¿ø ÃâÀÔÁõÀÌ ÀÖ´Ù. ¾Æ±î " + user[doctor_index] + "°¡ ÇÇ¾Æ³ë¸¦ Ä¥ ¶§ ¹ş¾î µĞ °Í °°´Ù.";
+	}
+
+	/*
+	 * ¸¶ÇÇ¾Æ°¡ ÀÖ´Â ¹æ¿¡ µé¾î°¡ ÀÖ´ø »ç¶÷µé ¸í´Ü
+	 */
+	private static void assignClue_room1() {
+		object_msg[3] = "room1," + user[mafia_index];
+		int index = 0;
+
+		while (true) {
+			int client_value = (int) (Math.random() * max_client);
+			int cnt = 0;
+			if (client_value != mafia_index) {
+				for (int i = 0; i < 3; i++) {
+					if ((client_value == temp[i]))
+						cnt++;
+				}
+				if (cnt == 0) {
+					temp[index] = client_value;
+					object_msg[3] += "," + user[client_value];
+					index++;
+				}
+				if (index == 3)
+					break;
+			}
+		}
+	}
+
+	/*
+	 * ¸¶ÇÇ¾Æ°¡ ¾ø´Â ¹æ¿¡ µé¾î°¡ ÀÖ´ø »ç¶÷µé ¸í´Ü
+	 */
+	private static void assignClue_room2() {
+		object_msg[4] = "room2";
+		int index = 0;
+		int[] temp2 = new int[] { -1, -1, -1 };
+		while (true) {
+			int client_value = (int) (Math.random() * max_client);
+			int cnt = 0;
+			if (client_value != mafia_index) {
+				for (int i = 0; i < 3; i++) {
+					if ((client_value == temp[i] || client_value == temp2[i]))
+						cnt++;
+				}
+				if (cnt == 0) {
+					temp2[index] = client_value;
+					object_msg[4] += "," + user[client_value];
+					index++;
+				}
+				if (index == 3)
+					break;
+			}
+		}
+	}
+
+	/*
+	 * ÀüÃ¼ À¯ÀúÀÇ ¹ß»çÀÌÁî Å©±â Á¤º¸
+	 */
+	private static void assignClue_totalFootSize() {
+		object_msg[5] = "foot size," + user[0] + " : " + footSize[0] + "," + user[1] + " : " + footSize[1] + ","
+				+ user[2] + " : " + footSize[2] + "," + user[3] + " : " + footSize[3] + "," + user[4] + " : "
+				+ footSize[4] + "," + user[5] + " : " + footSize[5] + "," + user[6] + " : " + footSize[6];
+	}
+
+	/*
+	 * ¸¶ÇÇ¾ÆÀÇ ¹ßÅ©±â
+	 */
+	private static void assignClue_mafiaFootSize() {
+		object_msg[6] = "mafia foot size," + (footSize[mafia_index] - 5) + " ~ " + (footSize[mafia_index] + 5);
+	}
+
 	public static void main(String[] args) throws Exception {
 		System.out.println("The chat server is running.");
-		ServerSocket listener = new ServerSocket(PORT); // error?????????????????
+		ServerSocket listener = new ServerSocket(PORT);
 
-		randomArray(random, matrix); // assign a job
-		initialize(vote, kicked, user, ID); // intialize informations of each players
-		initializeMatrix(matrix);
-		for (int i = 0; i < matrix_size; i++) {
-			for (int j = 0; j < matrix_size; j++)
-				System.out.print(matrix[i][j] + " ");
-			System.out.println();
-		}
+		randomArray();
+		initialize();
+
 		try {
 			while (true) {
 				new Handler(listener.accept()).start();
@@ -151,14 +250,6 @@ public class Chat_Server {
 		}
 	}
 
-	/*************************************************************
-	 * class Handler
-	 * 
-	 * this is for socket programming between server and clients.
-	 * 
-	 * @ name[String] : name @ socket[socket] : socket @ in[BufferedReader] :
-	 * BufferedReader @ out[PrintWriter] : printwriter
-	 *************************************************************/
 	private static class Handler extends Thread {
 
 		private String name;
@@ -170,144 +261,128 @@ public class Chat_Server {
 			this.socket = socket;
 		}
 
-		/* run for socket programming */
 		public void run() {
 			try {
-				in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // read from user
-				out = new PrintWriter(socket.getOutputStream(), true); // print out to console
+				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				out = new PrintWriter(socket.getOutputStream(), true);
 
-				while (true) {// read a name of player
+				while (true) {
 					out.println("SUBMITNAME");
 					name = in.readLine();
 					if (name == null) {
 						return;
 					}
 					synchronized (names) {
-						// if any user enters, alert to every players.
 						sendToallclient("CONNECT " + name + " is connected.\n");
 
-						if (!names.contains(name)) { // there must be no duplicate in name.
+						if (!names.contains(name)) {
 							names.add(name);
 
-							for (PrintWriter writer : writers) { // if any user enters, memo in server's console.
-								// ë§ë‚˜..??? -> ìƒˆë¡œìš´ ìœ ì €ê°€ ë“¤ì–´ì˜¬ ê²½ìš° ì±„íŒ…ì°½ìœ¼ë¡œ ìœ ì €ë“¤ì—ê²Œ [name]
-								// enterë¼ê³  ì•Œë ¤ì¤Œ
-								writer.println("MESSAGE " + "\"" + name + "\"ë‹˜ì´ ê²Œì„ì´ ì°¸ì—¬í–ˆìŠµë‹ˆë‹¤.");
+							for (PrintWriter writer : writers) {
+								writer.println("MESSAGE " + "[" + name + "] enter");
 							}
 							break;
 						}
-						else {
-							System.out.println("ì¤‘ë³µ");
-							for (PrintWriter writer : writers) writer.println("ERROR " + "ì´ë¯¸ ì‚¬ìš©ì¤‘ì¸ ë‹‰ë„¤ì„ì…ë‹ˆë‹¤.");
-						}
 					}
 				}
-				out.println("NAMEACCEPTED"); // if user enters own name, give check-message. ??? ->í´ë¼ì´ì–¸íŠ¸ì—ê²Œ
-				// NAMEACCPETEDë¼ëŠ” í”„ë¡œí† ì½œë©”ì„¸ì§€ë¥¼ ë³´ë‚´ì¤Œ ->ìœ ì €ì˜ ì±„íŒ…ì°½ í™œì„±í™” ì‹œì¼œì¤Œ
-				writers.add(out); // ??? -> ìœ ì €ì˜ ì£¼ì†Œë¥¼ hashsetì— ì €ì¥
-				user[client_count] = name; // store a name in array.
-				ID[client_count] = out; // store an ID in array.
+				out.println("NAMEACCEPTED");
 
-				client_count++; // for next users, do count++.
+				writers.add(out);
+				user[client_count] = name;
+				ID[client_count] = out;
 
-				System.out.println(user[client_count - 1] + "ë‹˜ì´ ì…ì¥í•˜ì…¨ìŠµë‹ˆë‹¤.");
-				System.out.println("í˜„ì¬ ì¸ì› " + client_count + "ëª…");
+				client_count++;
+
+				System.out.println(user[client_count - 1] + "´ÔÀÌ ÀÔÀåÇÏ¼Ì½À´Ï´Ù.");
+				System.out.println("ÇöÀç ÀÎ¿ø " + client_count + "¸í");
 
 				info.put(name, out);
-
+				for (int i = 0; i < selectNum; i++)
+					System.out.println(canSelect[i]);
 				if (client_count == max_client) {
-					game_start_flag = 1;
-					// if all player gathers, start the game.
+					objectPerson();
 					for (PrintWriter writer : writers) {
 						writer.println("MESSAGE " + "game start");
 					}
+					for (PrintWriter writer : writers) {
+						writer.println("CLUEFINDER" + user[canSelect[0]] + "," + user[canSelect[1]] + ","
+								+ user[canSelect[2]]);
+					}
 
-					// assign a job to player. ..? ë§ëŠ”ê±´ê°€..??
 					for (int i = 0; i < max_client; i++) {
 						String temp = job[i];
 						job[i] = job[random[i]];
 						job[random[i]] = temp;
 					}
 
-					for (int i = 0; i < max_client; i++) {
-						if ((job[i].substring(0, job[i].indexOf(" "))).equals("mafia"))
-							mafia_index = i;
-						else if ((job[i].substring(0, job[i].indexOf(" "))).equals("police"))
-							police_index = i;
-						else if ((job[i].substring(0, job[i].indexOf(" "))).equals("doctor"))
-							doctor_index = i;
-					}
-					// tell a job to each players.? ì´ ê³¼ì •ì´ ë§ë‚˜..?--ì§ì—…ë°°ì •ë°›ì€ ì •ë³´ë¥¼ ì†Œì¼“ì— ë‹´ì•„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì£¼ë©´ íŒì—…ì°½ìœ¼ë¡œ
-					// ì•Œë ¤ì£¼ëŠ” ê²Œ ì¢‹ì„ ê²ƒ ê°™ìŒ...
-					for (int i = 0; i < max_client; i++)
-						System.out.println(job[i]);
+					storeIndex();
+					assignClue_pol_doc();
+					assignClue_room1();
+					assignClue_room2();
+					assignClue_totalFootSize();
+					assignClue_mafiaFootSize();
 				}
 
 				while (true) {
-					// ì—¬ê¸°ì„œë¶€í„° ì–´ë–¤ ê³¼ì •ì¸ì§€ ì˜ ëª¨ë¥´ê² ìŒ...
+					if (kicked[mafia_index] == true) {
+						for (PrintWriter writer : writers) {
+							writer.println("MESSAGE " + "¸¶ÇÇ¾Æ°¡ Á×¾ú½À´Ï´Ù. ½Ã¹ÎµéÀÌ ÀÌ°å½À´Ï´Ù!");
+						}
+						System.exit(0);
+					} else if (current_client == 2) {
+						for (PrintWriter writer : writers) {
+							writer.println("MESSAGE " + "½Ã¹Î°ú ¸¶ÇÇ¾ÆÀÇ ¼ö°¡ °°½À´Ï´Ù. ¸¶ÇÇ¾Æ°¡ ÀÌ°å½À´Ï´Ù!");
+						}
+						System.exit(0);
+					}
 					String input = in.readLine();
-
-					if (input == null) { // if input is null,
+					if (input == null) {
 						return;
 					}
 
-					// whisper..?????? í•„ìš”í•œ ì´ìœ ..??? -> PAí• ë•Œ ì“°ë˜ ì½”ë“œë¥¼ ê·¸ëŒ€ë¡œ ì¨ì„œ ìˆìŒ ì‚­ì œí•´ë„ ë¬´ë°©
-					//else if (input.startsWith("<") && input.indexOf("/>") != -1) {
-					//	String whisper;
-					//	whisper = input.substring(1, input.indexOf("/>"));
-//
-	//					if (names.contains(whisper)) {
-		//					PrintWriter sender = info.get(name);
-			//				PrintWriter receiver = info.get(whisper);
-				//			receiver.println("MESSAGE " + "<whisper from " + name + "> : "
-					//				+ input.substring(whisper.length() + 3));
-						//	sender.println("MESSAGE " + "<whisper to " + whisper + "> : "
-							//		+ input.substring(whisper.length() + 3));
-					//	} else {
-					//		PrintWriter sender = info.get(name);
-						//	sender.println("MESSAGE " + "This user does not exist.");
-						//}
-
-					//}
-					// tell a job --ëª…ë ¹ì–´ë¥¼ ì¨ì•¼ë§Œ ì§ì—…ì„ ì•Œë ¤ì£¼ëŠ”..??ê²ƒ ë³´ë‹¤ëŠ” ì¼ë°©ì ìœ¼ë¡œ ì•Œë ¤ì£¼ëŠ”ê²Œ ì¢‹ì„ ê²ƒ ê°™ì•„ìš”~
-					// ì§ì—…ë°°ì •ë°›ì€ ì •ë³´ë¥¼ ì†Œì¼“ì— ë‹´ì•„ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì£¼ë©´ íŒì—…ì°½ìœ¼ë¡œ ì•Œë ¤ì£¼ëŠ” ê²Œ ì¢‹ì„ ê²ƒ ê°™ìŒ... !
-					// í˜„ì¬ ì„œë²„ì— êµ¬í˜„í•´ë†“ì€ ê¸°ëŠ¥ì€ guiì™€ ì—°ë™ë˜ì§€ ì•Šê³  ìˆœìˆ˜ ê¸°ëŠ¥ë§Œ êµ¬í˜„í•´ ë†“ì•˜ìŠµë‹ˆë‹¤. ì¶”í›„ guiê°€ ì™„ì„±ë˜ë©´ êµ¬í˜„ ì˜ˆì •
+					/*
+					 * À¯Àú°¡ job ¹öÆ°À» ´­·¯¼­ client·ÎºÎÅÍ /job ÇÁ·ÎÅäÄİÀÌ ¿Â °æ¿ì(RoomGUI¿Í ¿¬°ü ÀÖÀ½)
+					 */
 					else if (input.startsWith("/") && input.indexOf("job") != -1) {
 						int temp_index = 0;
 
 						for (int i = 0; i < client_count; i++) {
-							if (name == user[i])
+							if (name.equals(user[i]))
 								temp_index = i;
 						}
 
 						PrintWriter sender = info.get(name);
-						sender.println("MESSAGE " + "your job is "
-								+ job[temp_index].substring(0, job[temp_index].indexOf(" ")));
+						sender.println("SHOW_JOB" + job[temp_index]);
 					}
-					// jobê³¼ roleì˜ ì°¨ì´??? job : ì§ì—… role : ì—­í• (ëŠ¥ë ¥)
-					else if (input.startsWith("/") && input.indexOf("role") != -1) {
+
+					/*
+					 * À¯Àú°¡ story ¹öÆ°À» ´­·¯¼­ client·ÎºÎÅÍ /story ÇÁ·ÎÅäÄİÀÌ ¿Â °æ¿ì(RoomGUI¿Í ¿¬°ü ÀÖÀ½)
+					 */
+					else if (input.startsWith("/") && input.indexOf("story") != -1) {
 						int temp_index = 0;
+
 						for (int i = 0; i < client_count; i++) {
-							if (name == user[i])
+							if (name.equals(user[i]))
 								temp_index = i;
 						}
+
 						PrintWriter sender = info.get(name);
-						sender.println(
-								"MESSAGE " + "your role is " + job[temp_index].substring(job[temp_index].indexOf(" ")));
+						sender.println("SHOW_STORY" + story + totalJob);
 					}
-					// ì´ë¦„??? ë­í•˜ëŠ” ë¶€ë¶„ì¸ì§€ ì˜ ëª¨ë¥´ê² ì–´ìš”...
-					// 11ì›”24ì¼ ëª¨ì„ë•Œ ë§ì”€í•˜ì…¨ë˜ íˆ¬í‘œë¥¼ í• ë•Œ ì„œë²„ì—ì„œ í´ë¼ì´ì–¸íŠ¸ë“¤ì˜ ì´ë¦„ì„ ë°›ì•„ì˜¤ê¸° ìœ„í•œ ê³¼ì •ì…ë‹ˆë‹¤. ìœ ì €ê°€ ì±„íŒ…ì°½ì— /nameì´ë¼ê³  ì¹˜ë©´
-					// í˜„ì¬ ë“¤ì–´ì™€ ìˆëŠ” ìœ ì €ë“¤ì˜ ì´ë¦„ì´ guiíŒì—…ì°½ìœ¼ë¡œ ëœ¸
-					// ì•„ì§ ë¯¸ì™„ì„±
-					/***************************************
-					 * modified
-					 *******************************************/
+
+					/*
+					 * ÇÑ À¯ÀúÀÇ Å¸ÀÌ¸Ó°¡ ³¡³­ °æ¿ì
+					 */
 					else if (input.startsWith("/") && input.indexOf("timeout") != -1) {
 						timer_flag++;
+						System.out.println(timer_flag);
+						/*
+						 * ¸ğµç À¯ÀúÀÇ Å¸ÀÌ¸Ó°¡ ³¡³­ °æ¿ì
+						 */
 						if (timer_flag == current_client) {
 							String temp = null;
 							for (int i = 0; i < max_client; i++) {
-								if (kicked[i] != 0) {
+								if (kicked[i] == false) {
 									if (temp == null) {
 										temp = user[i];
 									} else {
@@ -316,24 +391,42 @@ public class Chat_Server {
 								}
 							}
 							System.out.println(temp);
+							/*
+							 * ¸ğµç À¯Àúµé¿¡°Ô VOTENAMEÀÌ¶ó´Â ÇÁ·ÎÅäÄİÀ» º¸³¿ -> À¯ÀúµéÀÌ Ã³ÇüÇÒ »ç¶÷µéÀÇ ¸®½ºÆ®¸¦ º¸³»ÁÜ
+							 */
 							for (PrintWriter writer : writers) {
 								writer.println("VOTENAME " + temp);
 							}
+							timer_flag = 0; // ´ÙÀ½ ÅõÇ¥¸¦ À§ÇØ 0À¸·Î ÃÊ±âÈ­
 						}
-					} else if (input.startsWith("/") && input.indexOf("victim") != -1) {
+					}
+
+					/*
+					 * À¯ÀúµéÀÌ ÅõÇ¥¸¦ ÇØ¼­ ¹ŞÀº Ç¥¸¦ À¯Àúº°·Î ÀúÀå
+					 */
+					else if (input.startsWith("/") && input.indexOf("victim") != -1) {
 						String victim = input.substring(7);
 						int temp_index = 0;
 						for (int i = 0; i < max_client; i++) {
-							if (user[i].equals(victim) && kicked[i] != 0)
+							if (user[i].equals(victim) && kicked[i] == false)
 								temp_index = i;
 						}
 						is_vote++;
 						vote[temp_index]++;
-					} else if (input.startsWith("/") && input.indexOf("police") != -1) {
+					}
+
+					/*
+					 * ¹ãÀÌ µÇ¾î¼­ °æÂûÀÇ ¿ªÇÒÀ» ½ÇÇàÇØÁÜ
+					 */
+					else if (input.startsWith("/") && input.indexOf("police") != -1) {
 						PrintWriter police = info.get(name);
 						String temp = null;
+
+						/*
+						 * °æÂûÀ» Á¦¿ÜÇÑ À¯ÀúµéÀÇ ¸í´ÜÀ» ÀúÀå
+						 */
 						for (int i = 0; i < max_client; i++) {
-							if (kicked[i] != 0 && !user[i].equals(user[police_index])) {
+							if (kicked[i] == false && !user[i].equals(user[police_index])) {
 								if (temp == null) {
 									temp = user[i];
 								} else {
@@ -342,14 +435,66 @@ public class Chat_Server {
 							}
 						}
 						System.out.println(temp);
-						if (name.equals(user[police_index]))
-							police.println("JOB" + temp);
-					} else if (input.startsWith("/") && input.indexOf("kill") != -1) {
-						System.out.println("ë§ˆí”¼ì•„ëƒ?");
-						PrintWriter mafia = info.get(name);
+
+						/*
+						 * °æÂûÀÌ Á×Áö ¾Ê¾Ò´Ù¸é
+						 */
+						if (kicked[police_index] == false) {
+							/*
+							 * /policeÇÁ·ÎÅäÄİÀ» º¸³½ userÀÇ ÀÌ¸§°ú °æÂûÀÇ ÀÌ¸§ÀÌ ÀÏÄ¡ÇÑ´Ù¸é °æÂû¿¡°Ô JOBÀÌ¶ó´Â ÇÁ·ÎÅäÄİ°ú À¯ÀúµéÀÇ ÀÌ¸§À» º¸³¿
+							 */
+							if (name.equals(user[police_index]))
+								police.println("JOB" + temp);
+						}
+						/*
+						 * °æÂûÀÌ Á×¾ú´Ù¸é
+						 */
+						else {
+							/*
+							 * ¸¶ÇÇ¾Æ¿Í ÀÌ¸§ÀÌ ÀÏÄ¡ÇÏ´Â À¯Àú¿¡°Ô NONÀÌ¶õ´À ÇÁ·ÎÅäÄİ º¸³¿
+							 */
+							if (name.equals(user[mafia_index]))
+								police.println("NON");
+						}
+					}
+
+					/*
+					 * °æÂûÀÌ Á÷¾÷À» ¾Ë°í½ÍÀº »ç¶÷À» ¼±ÅÃÇÑ °æ¿ì
+					 */
+					else if (input.startsWith("/") && input.indexOf("is_he_mafia?") != -1) {
+						PrintWriter police = info.get(user[police_index]);
+						String selected = input.substring(13);
+						int temp_index = 9999;
+						System.out.println("selected : " + selected);
+
+						/*
+						 * °æÂûÀÌ ¼±ÅÃÇÑ »ç¶÷°ú ÀÏÄ¡ÇÏ´Â »ç¶÷ÀÇ index ÃßÃâ
+						 */
+						for (int i = 0; i < max_client; i++) {
+							if (user[i].equals(selected) && kicked[i] == false)
+								temp_index = i;
+							System.out.println("user[" + i + "] : " + user[i]);
+						}
+
+						/*
+						 * °æÂû¿¡°Ô IS_MAFIA?¶ó´Â ÇÁ·ÎÅäÄİ°ú ¼±ÅÃÇÑ À¯ÀúÀÇ Á÷¾÷ Á¤º¸ Àü´Ş
+						 */
+						police.println("IS_MAFIA?" + user[temp_index] + "ÀÇ Á÷¾÷Àº"
+								+ job[temp_index].substring(0, job[temp_index].indexOf(" ")) + "ÀÔ´Ï´Ù.");
+					}
+
+					/*
+					 * ¸¶ÇÇ¾Æ¿¡°Ô¼­ /killÇÁ·ÎÅäÄİÀÌ ¿Â´Ù¸é
+					 */
+					else if (input.startsWith("/") && input.indexOf("kill") != -1) {
+						PrintWriter mafia = info.get(user[mafia_index]); // ¸¶ÇÇ¾ÆÀÇ ÁÖ¼Ò ÀúÀå
 						String temp = null;
+
+						/*
+						 * ¸¶ÇÇ¾Æ¿Í Á×Àº »ç¶÷µéÀ» Á¦¿ÜÇÑ ¸í´Ü ÀúÀå
+						 */
 						for (int i = 0; i < max_client; i++) {
-							if (kicked[i] != 0 && !user[i].equals(user[mafia_index])) {
+							if (kicked[i] == false && !user[i].equals(user[mafia_index])) {
 								if (temp == null) {
 									temp = user[i];
 								} else {
@@ -357,25 +502,42 @@ public class Chat_Server {
 								}
 							}
 						}
-						System.out.println(temp);
-						if (name.equals(user[mafia_index])) {
-							mafia.println("KILL" + temp);
-						}
-					} else if (input.startsWith("/") && input.indexOf("dead") != -1) {
-						PrintWriter mafia = info.get(user[mafia_index]);
-						String selected = input.substring(5);
+						System.out.println("mafia " + temp);
+
+						/*
+						 * ¸¶ÇÇ¾Æ ¿¡°Ô KILLÀÌ¶ó´Â ÇÁ·ÎÅäÄİ°ú ¸í´Ü Àü´Ş
+						 */
+						mafia.println("KILL" + temp);
+						System.out.println("¸¶ÇÇ¾Æ ¸í´Ü ³Ñ¾î°¨");
+
+					}
+					/*
+					 * ¸¶ÇÇ¾Æ°¡ Á×ÀÏ »ç¶÷À» Á¤Çß´Ù¸é
+					 */
+					else if (input.startsWith("/") && input.indexOf("dead") != -1) {
+						String selected = input.substring(5); // Á¤ÇÑ »ç¶÷(victim)ÀÇ ÀÌ¸§ ÃßÃâ
 						PrintWriter dead = info.get(selected);
+						/*
+						 * ¸¶ÇÇ¾Æ¿¡°Ô ¼±ÅÃ´çÇÑ »ç¶÷ÀÇ index ÃßÃâ
+						 */
 						for (int i = 0; i < max_client; i++) {
-							if (user[i].equals(selected) && kicked[i] != 0)
+							if (user[i].equals(selected) && kicked[i] == false)
 								victim_index = i;
 						}
-						if (kicked[doctor_index] != 0) {
+
+						/*
+						 * ¸¸¾à ÀÇ»ç°¡ »ì¾ÆÀÖ´Ù¸é
+						 */
+						if (kicked[doctor_index] == false) {
 							PrintWriter doctor = info.get(user[doctor_index]);
-							selectedByMafia[victim_index] = 1;
+							selectedByMafia[victim_index] = true;
 
 							String temp = null;
+							/*
+							 * Á×Àº»ç¶÷ Á¦¿Ü ÀÚ½ÅÀ» Æ÷ÇÔÇÑ ¸í´Ü ÀúÀå
+							 */
 							for (int i = 0; i < max_client; i++) {
-								if (kicked[i] != 0) {
+								if (kicked[i] == false) {
 									if (temp == null) {
 										temp = user[i];
 									} else {
@@ -383,117 +545,306 @@ public class Chat_Server {
 									}
 								}
 							}
+							/*
+							 * ÀÇ»ç¿¡°Ô DOCTOR ÇÁ·ÎÅäÄİ°ú ¸í´Ü Àü´Ş
+							 */
 							doctor.println("DOCTOR" + temp);
-						} else {
-							dead.println("KICKED");
-							for (PrintWriter writer : writers) {
-								writer.println("D_START" + user[victim_index] + " dead, he was "
-										+ job[victim_index].substring(0, job[victim_index].indexOf(" ")));
-							}
-							kicked[victim_index] = 0;
-							current_client--;
 						}
-					} else if (input.startsWith("/") && input.indexOf("protect") != -1) {
+
+						/*
+						 * ¸¸¾à ÀÇ»ç°¡ Á×¾ú´Ù¸é
+						 */
+						else {
+							/*
+							 * ¼±ÅÃ ´çÇÑ »ç¶÷¿¡°Ô KICKED¶ó´Â ÇÁ·ÎÅäÄİ Àü´Ş -> °­Åğ
+							 */
+							dead.println("KICKED");
+
+							/*
+							 * ¸ğµÎ¿¡°Ô victimÀÇ Á×À½°ú Á÷¾÷À» broadcastingÇÏ¸é¼­ D_START -> ³·ÀÌ µÇ¾ú´Ù°í ¾Ë¸²
+							 */
+							if (job[victim_index].substring(0, job[victim_index].indexOf(" ")).equals("½Ã¹Î")
+									|| job[victim_index].substring(0, job[victim_index].indexOf(" ")).equals("°æÂû")) {
+								for (PrintWriter writer : writers) {
+									writer.println("D_START" + user[victim_index] + "°¡(ÀÌ) Á×¾ú½À´Ï´Ù. ±×ÀÇ Á÷¾÷Àº"
+											+ job[victim_index].substring(0, job[victim_index].indexOf(" "))
+											+ "ÀÌ¾ú ½À´Ï´Ù.");
+								}
+							} else {
+								for (PrintWriter writer : writers) {
+									writer.println("D_START" + user[victim_index] + "°¡(ÀÌ) Á×¾ú½À´Ï´Ù. ±×ÀÇ Á÷¾÷Àº"
+											+ job[victim_index].substring(0, job[victim_index].indexOf(" "))
+											+ "¿´ ½À´Ï´Ù.");
+								}
+							}
+							kicked[victim_index] = true; // °­Åğ´çÇÑ À¯Àú¸¦ °ÔÀÓ¿¡¼­ Á¦¿Ü
+							current_client--; // ÇÑ¸í °­Åğ ´çÇÔ
+							objectPerson(); // ¿ÀºêÁ§Æ®¸¦ °í¸¦ »ç¶÷À» ´Ù½Ã ·¥´ıÀ¸·Î °í¸§
+
+							/*
+							 * ¸¸¾à ¸ğµç ¿ÀºêÁ§Æ®¸¦ Å¬¸¯Çß´Ù¸é
+							 */
+							if (objectCount == max_object) {
+								/*
+								 * ¸ğµç À¯Àú¿¡°Ô T_START(Å¸ÀÌ¸Ó½ÃÀÛ) ÇÁ·ÎÅäÄİÀ» º¸³¿
+								 */
+								for (PrintWriter writer : writers) {
+									writer.println("T_START" + "all object selected");
+								}
+							}
+							/*
+							 * ¾ÆÁ÷ ¼±ÅÃÇÒ object°¡ ³²¾Ò´Ù¸é
+							 */
+							else {
+								/*
+								 * ¸ğµç À¯Àúµé¿¡°Ô ´Ü¼­¸¦ »ÌÀ» »ç¶÷µéÀÇ ¸í´ÜÀ» ¾Ë·ÁÁÜ(CLUEFINEDER ÇÁ·ÎÅäÄİ)
+								 */
+								for (PrintWriter writer : writers) {
+									writer.println("CLUEFINDER" + user[canSelect[0]] + "," + user[canSelect[1]] + ","
+											+ user[canSelect[2]]);
+								}
+
+							}
+
+						}
+					}
+
+					/*
+					 * ÀÇ»ç°¡ »ì¸± »ç¶÷À» ¼±ÅÃÇß´Ù¸é
+					 */
+					else if (input.startsWith("/") && input.indexOf("protect") != -1) {
 						PrintWriter dead = info.get(user[victim_index]);
 						int temp_index = 9999;
 						String protect = input.substring(8);
 
+						/*
+						 * ÀÇ»ç°¡ »ì¸° »ç¶÷ÀÇ index ÃßÃâ
+						 */
 						for (int i = 0; i < max_client; i++) {
 							if (protect.equals(user[i]))
 								temp_index = i;
 						}
 
-						selectedByMafia[temp_index] = 0;
+						selectedByMafia[temp_index] = false;// ¸¶ÇÇ¾Æ¿¡°Ô ¼±ÅÃ´çÇÑ °ÍÀ» Ãë¼Ò½ÃÅ´ -> ¿ø·¡ falseÀÎ »ç¶÷À» false·Î ¸¸µé¼öµµÀÖÀ½ -> Èñ»ıÀÚ
+															// ¸ø»ì¸®´Â °æ¿ì
 
-						if (selectedByMafia[victim_index] == 1) {
+						/*
+						 * ÀÇ»ç°¡ ¸¶ÇÇ¾Æ¿¡°Ô ¼±ÅÃ´çÇÑ »ç¶÷À» ¼±ÅÃÇÏÁö ¾ÊÀº °æ¿ì
+						 */
+						if (selectedByMafia[victim_index] == true) {
+							/*
+							 * Èñ»ıÀÚ °­Æ¼
+							 */
 							dead.println("KICKED");
-							for (PrintWriter writer : writers) {
-								writer.println("D_START" + user[victim_index] + " dead, he was "
-										+ job[victim_index].substring(0, job[victim_index].indexOf(" ")));
+
+							/*
+							 * ³ª¸ÓÁö´Â /dead ÇÁ·ÎÅäÄİ°ú ºñ½Á
+							 */
+							if (job[victim_index].substring(0, job[victim_index].indexOf(" ")).equals("½Ã¹Î")
+									|| job[victim_index].substring(0, job[victim_index].indexOf(" ")).equals("°æÂû")) {
+								for (PrintWriter writer : writers) {
+									writer.println("D_START" + user[victim_index] + "°¡(ÀÌ) Á×¾ú½À´Ï´Ù. ±×ÀÇ Á÷¾÷Àº"
+											+ job[victim_index].substring(0, job[victim_index].indexOf(" "))
+											+ "ÀÌ¾ú ½À´Ï´Ù.");
+								}
+							} else {
+								for (PrintWriter writer : writers) {
+									writer.println("D_START" + user[victim_index] + "°¡(ÀÌ) Á×¾ú½À´Ï´Ù. ±×ÀÇ Á÷¾÷Àº"
+											+ job[victim_index].substring(0, job[victim_index].indexOf(" "))
+											+ "¿´ ½À´Ï´Ù.");
+								}
 							}
-							kicked[victim_index] = 0;
+
+							kicked[victim_index] = true;
 							current_client--;
-						} else {
+							objectPerson();
+							if (objectCount == max_object) {
+								for (PrintWriter writer : writers) {
+									writer.println("T_START" + "all object selected");
+								}
+
+							} else {
+								for (PrintWriter writer : writers) {
+									writer.println("CLUEFINDER" + user[canSelect[0]] + "," + user[canSelect[1]] + ","
+											+ user[canSelect[2]]);
+								}
+							}
+
+						}
+
+						/*
+						 * ÀÇ»ç°¡ ¸¶ÇÇ¾Æ¿¡°Ô ¼±ÅÃ´çÇÑ »ç¶÷À» ¼±ÅÃÇÑ °æ¿ì
+						 */
+						else {
+							/*
+							 * ¸ğµç À¯Àú¿¡°Ô ÀÇ»ç°¡ Èñ»ıÀÚ¸¦ »ì·È´Ù°í ºê·ÎµåÄ³½ºÆ®
+							 */
 							for (PrintWriter writer : writers) {
-								writer.println("D_START" + "Doctor saved victim");
+								writer.println("D_START" + "ÀÇ»ç°¡ Èñ»ıÀÚ¸¦ ÁöÄ×½À´Ï´Ù!");
+							}
+
+							objectPerson(); // ¿ÀºêÁ§Æ®¸¦ °í¸¦ »ç¶÷ ·£´ı ¼±ÅÃ
+
+							if (objectCount == max_object) {
+								for (PrintWriter writer : writers) {
+									writer.println("T_START" + "all object selected");
+								}
+							} else {
+								for (PrintWriter writer : writers) {
+									writer.println("CLUEFINDER" + user[canSelect[0]] + "," + user[canSelect[1]] + ","
+											+ user[canSelect[2]]);
+								}
 							}
 						}
 					}
-					// else if (input.startsWith("/") && input.indexOf("police") != -1) {
-					// PrintWriter police = info.get(name);
-					// String temp = null;
-					// for (int i = 0; i < max_client; i++) {
-					// if (kicked[i] != 0 && !user[i].equals(user[police_index])) {
-					// if (temp == null) {
-					// temp = user[i];
-					// } else {
-					// temp += ("," + user[i]);
-					// }
-					// }
-					// }
-					// System.out.println(temp);
-					// if (name.equals(user[police_index])) {
-					// police.println("JOB" + temp);
-					// } else {
-					// police.println("MESSAGE " + "You are not police");
-					// }
-					// }
-					else if (input.startsWith("/") && input.indexOf("is_he_mafia?") != -1) {
-						PrintWriter police = info.get(user[police_index]);
-						String selected = input.substring(13);
-						int temp_index = 9999;
-						System.out.println("selected : " + selected);
-						for (int i = 0; i < max_client; i++) {
-							if (user[i].equals(selected) && kicked[i] != 0)
-								temp_index = i;
-							System.out.println("user[" + i + "] : " + user[i]);
-						}
-						police.println("IS_MAFIA?" + user[temp_index] + "' job is "
-								+ job[temp_index].substring(0, job[temp_index].indexOf(" ")));
-					}
-					// ë­í•˜ëŠ” ë¶€ë¶„ì¸ì§€ ì˜ ëª¨ë¥´ê² ì–´ìš”..ã… ã… 
-					// ìœ ì €ê°€ ì±„íŒ…ì„ ì¹˜ë©´ ë‹¤ë¥¸ ìœ ì €ë“¤ì—ê²Œ ë³´ë‚´ì£¼ëŠ” ê¸°ëŠ¥
 
-					else if (input.startsWith("/") && input.indexOf("matrix") != -1) {
-						String temp = null;
-						for (int i = 0; i < matrix_size; i++) {
-							for (int j = 0; j < matrix_size; j++) {
-								if (temp == null)
-									temp = Integer.toString(matrix[i][j]) + " ";
-								else if (i == 6 && j == 6)
-									temp += Integer.toString(matrix[i][j]);
-								else
-									temp += Integer.toString(matrix[i][j]) + " ";
+					/*
+					 * À¯Àú°¡ ¿ÀºêÁ§Æ®¸¦ ´©¸¥ °æ¿ì
+					 */
+					else if (input.startsWith("object_clicked")) {
+						int msg_index = Integer.parseInt(input.substring(14));
+
+						/*
+						 * ¿ÀºêÁ§Æ®¸¦ ´©¸¥ À¯ÀúÀÇ ÀÌ¸§ÀÌ ¿ÀºêÁ§Æ®¸¦ ´©¸£µµ·Ï Çã¿ëµÈ À¯ÀúÀÇ ÀÌ¸§°ú °°´Ù¸é.
+						 */
+						if (name.equals(user[canSelect[clickedNum]])) {
+
+							/*
+							 * ¿ÀºêÁ§Æ®°¡ ¼±ÅÃµÇÁö ¾Ê¾Ò°í (object_flag[msg_index] == true ) ÇØ´ç À¯Àú°¡ ´Ù¸¥ ¿ÀºêÁ§Æ®¸¦ Å¬¸¯ ÇÏÁö
+							 * ¾Ê¾Ò´Ù¸é(isClicked[canSelect[clickedNum]] == false)
+							 */
+							if (object_flag[msg_index] == true && isClicked[canSelect[clickedNum]] == false) {
+								PrintWriter sendObject = info.get(name);
+
+								System.out.println(msg_index);
+
+								/*
+								 * Ã¹¹øÂ° µÎ¹øÂ° À¯Àú°¡ ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃÇÏ´Â °æ¿ì
+								 */
+								if (clickedNum != selectNum - 1) {
+
+									/*
+									 * ¸ğµç À¯Àú¿¡°Ô ÇØ´ç À¯Àú°¡ ¿ÀºêÁ§Æ®¸¦ »Ì¾ÒÀ½À» ¾Ë·ÁÁÖ°í ´ÙÀ½ À¯Àú°¡ ¿ÀºêÁ§Æ®¸¦ »ÌÀ» Â÷·Ê¶ó´Â °ÍÀ» ¾Ë·ÁÁÜ
+									 */
+									for (PrintWriter writer : writers) {
+
+										/*
+										 * ¾ÆÁ÷ ¼±ÅÃÇÒ ¿ÀºêÁ§Æ®°¡ ³²¾Æ ÀÖ´Â °æ¿ì
+										 */
+										if (objectCount != max_object - 1) {
+											writer.println("FOUND" + user[canSelect[clickedNum]] + ","
+													+ user[canSelect[clickedNum + 1]]);
+										}
+										/*
+										 * ÇØ´ç À¯Àú°¡ ¿ÀºêÁ§Æ®¸¦ »Ì¾Æ¼­ ´õÀÌ»ó ¼±ÅÃÇÒ ¿ÀºêÁ§Æ®°¡ ¾ø´Â °æ¿ì(10°³ ¸ğµÎ ¼±ÅÃÇÑ °æ¿ì)
+										 */
+										else {
+											writer.println(
+													"FOUND" + user[canSelect[clickedNum]] + "," + "everyone_select");
+										}
+
+									}
+									sendObject.println("object_description" + object_msg[msg_index]); // »ç¿ëÀÚ°¡ ´©¸¥ ¿ÀºêÁ§Æ®¿¡
+																										// ÇØ´çÇÏ´Â ¸Ş¼¼Áö Àü¼Û
+									object_flag[msg_index] = false; // ÇØ´ç ¿ÀºêÁ§ºz ºñÈ°¼ºÈ­
+									clickedNum++; // Å¬¸¯ÇÑ È½¼ö Áõ°¡
+
+								}
+
+								/*
+								 * ¸¶Áö¸· À¯Àú°¡ ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃÇÏ´Â °æ¿ì
+								 */
+								else {
+									for (PrintWriter writer : writers) {
+										writer.println("FOUND" + user[canSelect[clickedNum]] + "," + "everyone_select");
+									}
+									sendObject.println("object_description" + object_msg[msg_index]);
+									object_flag[msg_index] = false;
+									clickedNum++;
+								}
+								objectCount++;
+
+								/*
+								 * ÇØ´ç À¯Àú°¡ ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃÇØ¼­ ´õÀÌ»ó ¼±ÅÃÇÒ ¿ÀºêÁ§Æ®°¡ ¾ø´Â °æ¿ì(10°³ ¸ğµÎ ¼±ÅÃ)
+								 */
+								if (objectCount == max_object) {
+									for (PrintWriter writer : writers) {
+										writer.println("T_START" + "all object selected");
+									}
+								}
 							}
 
+							/*
+							 * ÀÌ¹Ì ´Ù¸¥ »ç¶÷ÀÌ ÇØ´ç ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃÇÑ °æ¿ì -> ÇØ´ç À¯Àú´Â ´Ù¸¥ ¿ÀºêÁ§Æ®¸¦ »ÌÀ» ¼ö ÀÖÀ½
+							 */
+							else if (object_flag[msg_index] == false && isClicked[canSelect[clickedNum]] == false) {
+								PrintWriter sendObject = info.get(name);
+								sendObject.println("object_description" + "ÀÌ¹Ì ´Ù¸¥ »ç¶÷ÀÌ ¼±ÅÃÇÑ ¿ÀºêÁ§Æ®ÀÔ´Ï´Ù.");
+							}
 						}
-						for (PrintWriter writer : writers) {
-							writer.println("MATRIX" + temp);
+
+						/*
+						 * ÇØ´ç À¯ÀúÀÇ Â÷·Ê°¡ ¾Æ´Ñ °æ¿ì
+						 */
+						else {
+							PrintWriter sendObject = info.get(name);
+							sendObject.println("object_description" + "´ç½ÅÀÇ Â÷·Ê°¡ ¾Æ´Õ´Ï´Ù");
 						}
-					} else if (game_start_flag == 1 && input.startsWith("object_clicked")) {
-						clickedNum++;
-						if (clickedNum == current_client) {
+
+						/*
+						 * ¿ÀºêÁ§Æ®¸¦ »Ìµµ·Ï ÁöÁ¤µÈ À¯Àú(3¸í)°¡ ´Ù »ÌÀº °æ¿ì
+						 */
+						if (clickedNum == selectNum) {
+
+							/*
+							 * ¸ğµç À¯Àúµé¿¡°Ô Å¸ÀÌ¸Ó ½ÃÀÛ ÇÁ·ÎÅäÄİ º¸³¿
+							 */
 							for (PrintWriter writer : writers) {
 								writer.println("T_START");
 							}
+							clickedNum = 0;
 
+							/*
+							 * ´Ù½Ã ÃÊ±âÈ­ -> ´ÙÀ½ ÅÏ¿¡ ¿ÀºêÁ§Æ®¸¦ »ÌÀ» À¯ÀúµéÀÇ ÀÎµ¦½º¸¦ ÀúÀåÇØ¾ß ÇÏ±â ¶§¹®
+							 */
+							for (int i = 0; i < selectNum; i++) {
+								canSelect[i] = 9999;
+							}
 						}
-					} else {
+
+					}
+
+					/*
+					 * ±×³É Ã¤ÆÃ Ä¡´Â °æ¿ì
+					 */
+					else {
 						for (PrintWriter writer : writers) {
-							writer.println("MESSAGE " + name + ": " + input);
+							if (!input.equals("")) // ¿£ÅÍÅ°¸¸ °è¼Ó ´©¸£¸é ¸Ş¼¼Áö ¾øÁö °ø¹é¹®ÀÚ¸¸ Ãâ·ÂµÇ´Â °æ¿ì¸¦ Á¦¿ÜÇÏ°í
+								writer.println("MESSAGE " + name + ": " + input);
 						}
 					}
 
+					/*
+					 * ¸ğµç À¯ÀúµéÀÌ ÅõÇ¥¸¦ ¸¶ÃÆ´Ù¸é
+					 */
 					if (is_vote == client_count) {
 						int count = 0;
 						int temp_index = 0;
 						int same = 0;
+
+						/*
+						 * °¡Àå ¸¹ÀÌ Ç¥¸¦ ¹ŞÀº À¯Àú¸¦ Ã£¾Æ³¿
+						 */
 						for (int i = 0; i < max_client; i++) {
 							if (vote[i] > count) {
 								count = vote[i];
 								temp_index = i;
 							}
 						}
+
+						/*
+						 * ÇÑ¹ø ´õ °Ë»çÇØ¼­ µ¿·üÀÌ ÀÖ´ÂÁö Ã£¾Æ³¿
+						 */
 						for (int i = 0; i < max_client; i++) {
 							if (count == vote[i] && i != temp_index)
 								same = 1;
@@ -502,50 +853,46 @@ public class Chat_Server {
 						if (count == 0)
 							same = 0;
 
+						/*
+						 * µ¿·üÀÌ ¾Æ´Ñ °æ¿ì
+						 */
 						if (same != 1) {
 							PrintWriter victim = info.get(user[temp_index]);
 							victim.println("KICKED");
 							for (PrintWriter writer : writers) {
-								writer.println("V_END" + user[victim_index] + " dead, he was "
-										+ job[victim_index].substring(0, job[victim_index].indexOf(" ")));
+								writer.println("V_END" + user[temp_index] + " dead, he was "
+										+ job[temp_index].substring(0, job[temp_index].indexOf(" ")));
 							}
-							kicked[temp_index] = 0;
+							kicked[temp_index] = true;
 							current_client--;
-						} else {
+						}
+
+						/*
+						 * µ¿·üÀÎ °æ¿ì
+						 */
+						else {
 							for (PrintWriter writer : writers) {
-								writer.println("V_END" + "Nothing happened");
+								writer.println("V_END" + "¾Æ¹«µµ Ã³Çü´çÇÏÁö ¾Ê¾Ò½À´Ï´Ù.");
 							}
 						}
 						is_vote = 0;
 						count = 0;
+
+						/*
+						 * ´ÙÀ½ ÅõÇ¥¸¦ À§ÇØ ÃÊ±âÈ­
+						 */
 						for (int i = 0; i < max_client; i++)
 							vote[i] = 0;
 					}
-
-					if (kicked[mafia_index] == 0) {
-						for (PrintWriter writer : writers) {
-							writer.println("MESSAGE " + "mafia dead!, citizen win!");
-						}
-						System.exit(0);
-					} else if (current_client == 2) {
-						for (PrintWriter writer : writers) {
-							writer.println("MESSAGE " + "mafia win!");
-						}
-						System.exit(0);
-					}
-					/*****************************************************************************/
 				}
-			} catch (IOException e) { // ê°‘ìê¸° catchê°€ ë‚˜ì˜¨ ì´ìœ ..? -> ì—ëŸ¬ ë°œìƒì‹œ
+			} catch (IOException e) {
 				System.out.println(e);
-			} finally { // if client is out, alert.
+			} finally {
 				if (name != null) {
-					// for (PrintWriter writer : writers) {
-					// writer.println("MESSAGE " + "[" + name + "] exit");
-					// }
 					names.remove(name);
 					info.remove(name);
 					client_count--;
-					System.out.println("í•œëª… ë‚˜ê°”ë‹¤ " + client_count);
+					System.out.println("ÇÑ¸í ³ª°¬´Ù " + client_count);
 				}
 				if (out != null) {
 					writers.remove(out);
@@ -556,9 +903,9 @@ public class Chat_Server {
 				}
 			}
 		}
+
 	}
 
-	// í´ë¼ì´ì–¸íŠ¸ ì „ë¶€ì—ê²Œ ì‹œìŠ¤í…œ ë©”ì„¸ì§€ ë³´ë‚´ëŠ” ë©”ì†Œë“œ
 	public static void sendToallclient(String mssg) {
 		for (PrintWriter writer : writers) {
 			writer.println(mssg);

@@ -8,7 +8,7 @@ import javax.swing.*;
 class SecondThread extends Thread
 
 {
-	int y = 5;
+	int y = 60;
 	JLabel myLabel = null;
 	private boolean stopMe = false;
 	private Object monitorObj = null;
@@ -59,20 +59,21 @@ class SecondThread extends Thread
 			if (y == -1) {
 				Send_socket.out.println("/timeout");
 				this.interrupt();
-				return;
+				break;
+
 			}
 		}
-		
+
 	}
-	public int getTime()
-	{
+
+	public int getTime() {
 		return y;
 	}
 }
 
 public class Timer_Start extends JFrame implements ActionListener, Runnable {
 
-	JLabel timerLabel = null;
+	static JLabel timerLabel = null;
 	JLabel secondLabel = null;
 	JButton stopbutton = null;
 	SecondThread secondThread = null;
@@ -95,8 +96,14 @@ public class Timer_Start extends JFrame implements ActionListener, Runnable {
 		this.setSize(300, 150);
 		this.setVisible(true);
 
-		secondThread = new SecondThread(secondLabel,monitorObj);
+		secondThread = new SecondThread(secondLabel, monitorObj);
 		secondThread.start();
+
+		while (!secondThread.interrupted()) {
+			if (secondThread.getTime() == -1)
+				break;
+		}
+		this.setVisible(false);
 	}
 
 	public void run() {

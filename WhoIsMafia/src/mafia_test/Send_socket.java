@@ -1,4 +1,6 @@
-/**/
+
+package mafia_test;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,16 +20,13 @@ public class Send_socket implements Runnable {
 	static PrintWriter out;
 	JFrame frame = new JFrame();
 	JPanel panel = new JPanel();
-	Font font = new Font("ë‚˜ëˆ”ê³ ë”•", Font.PLAIN, 20);
-	JTextField textField = new JTextField(22);
-	JTextArea messageArea = new JTextArea(4, 22);
+	JTextField textField = new JTextField(20);
+	JTextArea messageArea = new JTextArea(4, 40);
 	public String[] vote_name = new String[7];
 
 	public Send_socket() {
 		messageArea.setEditable(false);
 		textField.setEditable(false);
-		messageArea.setFont(font);
-		textField.setFont(font);
 		RoomGUI.frame.getContentPane().add(textField, "South");
 		RoomGUI.frame.getContentPane().add(new JScrollPane(messageArea), "East");
 		RoomGUI.frame.setVisible(true);
@@ -45,22 +44,25 @@ public class Send_socket implements Runnable {
 				JOptionPane.PLAIN_MESSAGE);
 	}
 
-	/* ìœ ì € ë‹‰ë„¤ì„ ì…ë ¥ */
+	/* °ÔÀÓ¿¡¼­ »ç¿ëÇÒ ÀÌ¸§À» ÀÔ·Â¹ŞÀ½ */
 	private String getsName() {
 		return JOptionPane.showInputDialog(frame, "Choose a User's nikname:", "Who is the mafia",
 				JOptionPane.PLAIN_MESSAGE);
 	}
 
+	/* ¾Æ·¡ run ÇÔ¼öÀÇ int page´Â ¸ŞÀÎÈ­¸é¿¡¼­ ÀÔÀåÇÒ ¶§ ¸¸ À¯ÀúÀÇ ´Ğ³×ÀÓÀ» ¹Ş°í ½Í¾î ¸¸µç º¯¼öÀÔ´Ï´Ù. */
 	void runChat(String[] players, int page) throws IOException {
 		// Make connection and initialize streams
-		int[][] matrix = new int[matrixSize][matrixSize];
+
 		String serverAddress = new String(getServerAddress());
 		JFrame actionFrame = new JFrame();
 		Socket socket = new Socket(serverAddress, 9001);
-		Thread t3 = new Thread(new Timer_start());
+		int count = 0;
+
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		out = new PrintWriter(socket.getOutputStream(), true);
-		
+		/* ¾Æ·¡ while¹®Àº °ÔÀÓ ³» ÇÁ·ÎÅäÄİ¿¡¼­ KICKEDµÇÁö ¾ÊÀ¸¸é GUI°¡ ¿µ¿øÈ÷ Á¾·á ¾È µÇ´Â ¹®Á¦°¡ ÀÖ½À´Ï´Ù.. */
+
 		while (true) {
 			String line = in.readLine();
 			if (line.startsWith("SUBMITNAME")) {
@@ -68,12 +70,17 @@ public class Send_socket implements Runnable {
 			} else if (line.startsWith("NAMEACCEPTED")) {
 				textField.setEditable(true);
 			} else if (line.startsWith("MESSAGE")) {
-				messageArea.append(line.substring(8) + "\n");
-			} else if (line.startsWith("ERROR")){
-				JOptionPane.showMessageDialog(null, line.substring(6));
-			}
+				if (line.substring(8).equals("game start")) {
+					for (int i = 0; i < 30; i++)
+						if (frame.getComponents() instanceof JButton[])
+							frame.getComponent(i).setEnabled(true);
 
-			// out.println("vote"+vote(players)); //-> players ìœ ì € ì´ë¦„ì´ ë‹´ê¸´ ë¦¬ìŠ¤íŠ¸
+				}
+				messageArea.append(line.substring(8) + "\n");
+			}
+			// if(¼­¹ö°¡ 5ºĞÀÌ µÇ¾ú´Ù°í ¾Ë·ÁÁÖ¸é)
+
+			// out.println("vote"+vote(players)); //-> players´Â À¯ÀúÀÌ¸§ÀÌ ´ã±ä ½ºÆ®¸µ ¹è¿­
 			else if (line.startsWith("JOB")) {
 				line = line.substring(3);
 				String selected = police(line);
@@ -82,14 +89,16 @@ public class Send_socket implements Runnable {
 			} else if (line.startsWith("IS_MAFIA?")) {
 				messageArea.append(line.substring(9) + "\n");
 				out.println("/kill");
-			} else if (line.startsWith("VOTENAME ")) {//í…ŒìŠ¤íŒ… êµ¬ë¬¸
+			} else if (line.startsWith("NON")) {
+				out.println("/kill");
+			} else if (line.startsWith("VOTENAME ")) {// Å×½ºÆ®¸¦ À§ÇØ µ¹¾Æ°¡´Â ºÎºĞ
 				line = line.substring(9);
 				String victim = vote(line);
 				System.out.println(victim);
 				out.println("/victim" + victim);
 			} else if (line.startsWith("KILL")) {
-				line = line.substring(4);
-				String victim = vote(line);
+				line = line.substring(4) + ",¾Æ¹«µµ ¼±ÅÃÇÏÁö ¾ÊÀ½";
+				String victim = mafia(line);
 				System.out.println(victim);
 				out.println("/dead" + victim);
 			} else if (line.startsWith("DEAD")) {
@@ -100,58 +109,163 @@ public class Send_socket implements Runnable {
 				System.out.println(protect);
 				out.println("/protect" + protect);
 			} else if (line.startsWith("D_START")) {
-				messageArea.append("\t[SYSTEM MESSAGE]" + "\n");
-				messageArea.append("\tì•„ì¹¨ì´ ë°ì•˜ë‹¤." + "\n");
+				textField.setVisible(true);
+				messageArea.append("\n******************************************************************\n");
+				messageArea.append("[SYSTEM MESSAGE]" + "\n");
+				messageArea.append("³·ÀÌ µÇ¾ú½À´Ï´Ù" + "\n");
 				messageArea.append(line.substring(7) + "\n");
-			} else if (line.startsWith("MATRIX")) {
-				int count = 0;
-				line = line.substring(6);
-				String[] temp = line.split(" ");
-				for (int i = 0; i < matrixSize; i++) {
-					for (int j = 0; j < matrixSize; j++) {
-						matrix[i][j] = Integer.parseInt(temp[count]);
-						count++;
+				messageArea.append("******************************************************************\n");
+			} else if (line.startsWith("T_START")) {
+				if (line.indexOf("all object selected") != -1) {
+					messageArea.append("\n******************************************************************\n");
+					messageArea.append("[SYSTEM MESSAGE]" + "\n");
+					messageArea.append("»ç¿ëÀÚµéÀÌ ¸ğµç ¿ÀºêÁ§Æ®¸¦ Å¬¸¯ ÇÏ¿´½À´Ï´Ù" + "\n");
+					messageArea.append("5ºĞµ¿¾È Åä·ĞÀ» ÇØ¼­ ¸¶ÇÇ¾Æ¸¦ Ã£¾Æ³»¼¼¿ä" + "\n");
+					messageArea.append("******************************************************************\n");
+				} else {
+					messageArea.append("\n******************************************************************\n");
+					messageArea.append("[SYSTEM MESSAGE]" + "\n");
+					messageArea.append("»ç¿ëÀÚ°¡ ¸ğµÎ ¿ÀºêÁ§Æ®¸¦ Å¬¸¯ ÇÏ¿´½À´Ï´Ù" + "\n");
+					messageArea.append("5ºĞµ¿¾È Åä·ĞÀ» ÇØ¼­ ¸¶ÇÇ¾Æ¸¦ Ã£¾Æ³»¼¼¿ä" + "\n");
+					messageArea.append("******************************************************************\n");
+				}
+				Thread t3 = new Thread(new Timer_Start());
+				t3.start();
+				// JOptionPane.showMessageDialog(actionFrame, line.substring(8),
+				// "Message", 2);
+			} else if (line.startsWith("V_END")) {
+				messageArea.append("\n******************************************************************\n");
+				messageArea.append("[SYSTEM MESSAGE]" + "\n");
+				messageArea.append(line.substring(5) + "\n\n");
+				messageArea.append("¹ãÀÌ µÇ¾ú½À´Ï´Ù" + "\n");
+				messageArea.append("°æÂûÀº Á÷¾÷À» ¾Ë°í ½ÍÀº »ç¶÷À» ¼±ÅÃÇØÁÖ¼¼¿ä" + "\n");
+				messageArea.append("¸¶ÇÇ¾Æ´Â Á×ÀÌ°í ½ÍÀº »ç¶÷À» ¼±ÅÃÇØÁÖ¼¼¿ä" + "\n");
+				messageArea.append("ÀÇ»ç´Â »ì¸®°í ½ÍÀº »ç¶÷À» ¼±ÅÃÇØÁÖ¼¼¿ä" + "\n");
+				messageArea.append("******************************************************************\n");
+				textField.setVisible(false);
+				out.println("/police");
+			} else if (line.startsWith("object_description")) {
+				line = line.substring(18);
+				System.out.println(line);
+				if (line.startsWith("room1,")) {
+					String[] divide = line.split(",");
+					line = "";
+					for (int i = 0; i < divide.length; i++) {
+						line += divide[i] + "\n";
+					}
+				} else if (line.startsWith("room2,")) {
+					String[] divide = line.split(",");
+					line = "";
+					for (int i = 0; i < divide.length; i++) {
+						line += divide[i] + "\n";
+					}
+				} else if (line.startsWith("foot size,")) {
+					String[] divide = line.split(",");
+					line = "";
+					for (int i = 0; i < divide.length; i++) {
+						line += divide[i] + "\n";
+					}
+
+				} else if (line.startsWith("mafia foot size,")) {
+					String[] divide = line.split(",");
+					line = "";
+					for (int i = 0; i < divide.length; i++) {
+						line += divide[i] + "\n";
 					}
 				}
-			} else if (line.startsWith("T_START")) {
-				messageArea.append("\t[SYSTEM MESSAGE]" + "\n");
-				messageArea.append("      ì¦ê±°ë¥¼ ì¶©ë¶„íˆ ì°¾ì€ ê²ƒ ê°™ë‹¤." + "\n");
-				messageArea.append("     ì‚¬ëŒë“¤ê³¼ ì˜ë…¼í•˜ì—¬ ë§ˆí”¼ì•„ë¥¼ ì°¾ì." + "\n");
-				t3.start();
-				JOptionPane.showMessageDialog(actionFrame, line, "Message", 2);
-			} else if (line.startsWith("V_END")) {
-				messageArea.append(line.substring(5)+"\n\n");
-				messageArea.append("\t[SYSTEM MESSAGE]" + "\n");
-				messageArea.append("       í•œë°¤ì¤‘ì´ ë˜ì—ˆë‹¤." + "\n");
-				messageArea.append("    ë³´ì•ˆê´€ì€ ì˜ì‹¬ ê°€ëŠ” ì‚¬ëŒì„ ì‹¬ë¬¸í•œë‹¤." + "\n");
-				messageArea.append("     ë§ˆí”¼ì•„ëŠ” ë‹¤ìŒ ì‚´í•´ ëŒ€ìƒì„ ê³ ë¥¸ë‹¤." + "\n");
-				messageArea.append("      ì˜ì‚¬ëŠ” í•œ ì‚¬ëŒì„ ë³´í˜¸í•œë‹¤." + "\n");
-				out.println("/police");
-			} else if (line.startsWith("KICKED")) {
+				JOptionPane.showMessageDialog(actionFrame, line, "CLUE", JOptionPane.PLAIN_MESSAGE);
+			} else if (line.startsWith("FOUND")) {
+				String first = line.substring(5, line.indexOf(","));
+				line = line.substring(line.indexOf(",") + 1);
+				String last = line;
+				if (last.equals("everyone_select")) {
+					messageArea.append("\n******************************************************************\n");
+					messageArea.append("[SYSTEM MESSAGE]" + "\n");
+					messageArea.append(first + "°¡ ¸Ş¼¼Áö¸¦ ÀĞ¾ú½À´Ï´Ù" + "\n");
+					messageArea.append("******************************************************************\n");
+				} else {
+					messageArea.append("\n******************************************************************\n");
+					messageArea.append("[SYSTEM MESSAGE]" + "\n");
+					messageArea.append(first + "°¡ ¸Ş¼¼Áö¸¦ ÀĞ¾ú½À´Ï´Ù" + "\n");
+					messageArea.append(last + "°¡ ´Ü¼­¸¦ Ã£À» Â÷·ÊÀÔ´Ï´Ù" + "\n");
+					messageArea.append("******************************************************************\n");
+				}
+			} else if (line.startsWith("CLUEFINDER")) {
+				String first = line.substring(10, line.indexOf(","));
+				line = line.substring(line.indexOf(",") + 1);
+				String middle = line.substring(0, line.indexOf(","));
+				line = line.substring(line.indexOf(",") + 1);
+				String last = line;
+				messageArea.append("\n******************************************************************\n");
+				messageArea.append("[SYSTEM MESSAGE]" + "\n");
+				messageArea.append(first + "¿Í " + middle + "¿Í " + last + "°¡ ¼±ÅÃ µÇ¾ú½À´Ï´Ù.\n");
+				messageArea.append(first + "°¡ ´Ü¼­¸¦ Ã£À» Â÷·ÊÀÔ´Ï´Ù\n");
+				messageArea.append("******************************************************************\n");
+			}
+
+			else if (line.startsWith("SHOW_JOB")) {
+				line = line.substring(8);
+				line = line.substring(0, line.indexOf(" ")) + "\n" + line.substring(line.indexOf(" ") + 1);
+				JOptionPane.showMessageDialog(actionFrame, line, "Job", JOptionPane.PLAIN_MESSAGE);
+			}
+
+			else if (line.startsWith("SHOW_STORY")) {
+				line = line.substring(10);
+				String[] selections = line.split(",");
+				String total = "";
+				String[] divide = selections[0].split("/");
+				selections[0] = divide[0] + "\n" + divide[1] + "\n" + divide[2];
+
+				for (int i = 0; i < selections.length; i++) {
+					if (i % 2 == 0)
+						total += selections[i] + "\n\n";
+					else
+						total += selections[i] + "\n";
+				}
+				JOptionPane.showMessageDialog(actionFrame, total, "Story", JOptionPane.PLAIN_MESSAGE);
+			}
+
+			else if (line.startsWith("KICKED")) {
 				System.exit(0);
 			}
+			messageArea.setCaretPosition(messageArea.getDocument().getLength());
 		}
 
 	}
 
-	public String vote(String line) { //í…ŒìŠ¤íŒ…
+	public String vote(String line) { // Å×½ºÆ®¿ë
 		String candidate = null;
 		String[] selections = line.split(",");
 		for (int i = 0; i < selections.length; i++)
-			System.out.println(selections[i]);//íˆ¬í‘œë¥¼ ìœ„í•œ ìœ ì € ì´ë¦„ì„ ë‹´ëŠ” ë³€ìˆ˜
+			System.out.println(selections[i]);// ÅõÇ¥¸¦ À§ÇØ À¯ÀúÀÌ¸§À» ´ã¾Æ³õÀ½. ¼­¹ö¿¡¼­ ¹Ş¾Æ¿Í¾ß ÇÔ.
 
-		candidate = (String) JOptionPane.showInputDialog(null, "ë§ˆí”¼ì•„ë¡œ ì˜ì‹¬ë˜ëŠ” ì‚¬ëŒì„ ì§€ëª©í•˜ì.", "vote", JOptionPane.QUESTION_MESSAGE,
+		candidate = (String) JOptionPane.showInputDialog(null, "´©±¸¸¦ Ã³Çü ÇÏ½Ã°Ú½À´Ï±î?", "VOTE", JOptionPane.QUESTION_MESSAGE,
 				null, selections, "user1");
-		return candidate; // ->ì„œë²„ì—ê²Œ candidate ì „ë‹¬
+		// null¿¡´Â ÀÌ ÆË¾÷À» ¶ç¿ï paneÀÇ ÀÌ¸§À» Àû´Â´Ù.
+		return candidate; // ->¼­¹ö¿¡°Ô candidate¸¦ ¸®ÅÏÇÔ.
 	}
 
-	public String police(String line) { //í…ŒìŠ¤íŒ…
+	public String mafia(String line) { // Å×½ºÆ®¿ë
+		String candidate = null;
+		String[] selections = line.split(",");
+		for (int i = 0; i < selections.length; i++)
+			System.out.println(selections[i]);// ÅõÇ¥¸¦ À§ÇØ À¯ÀúÀÌ¸§À» ´ã¾Æ³õÀ½. ¼­¹ö¿¡¼­ ¹Ş¾Æ¿Í¾ß ÇÔ.
+
+		candidate = (String) JOptionPane.showInputDialog(null, "´©±¸¸¦ Á×ÀÌ½Ã°Ú½À´Ï±î?", "MAFIA", JOptionPane.QUESTION_MESSAGE,
+				null, selections, "user1");
+		// null¿¡´Â ÀÌ ÆË¾÷À» ¶ç¿ï paneÀÇ ÀÌ¸§À» Àû´Â´Ù.
+		return candidate; // ->¼­¹ö¿¡°Ô candidate¸¦ ¸®ÅÏÇÔ.
+	}
+
+	public String police(String line) { // Å×½ºÆ®¿ë
 		String selected = null;
 		String[] selections = line.split(",");
 		for (int i = 0; i < selections.length; i++)
-			System.out.println(selections[i]);//ìœ ì € ì´ë¦„ ì €ì¥ ë³€ìˆ˜
-		selected = (String) JOptionPane.showInputDialog(null, "ëˆ„êµ¬ë¥¼ ì£½ì¼ê¹Œ...", "select", JOptionPane.QUESTION_MESSAGE,
+			System.out.println(selections[i]);// ÅõÇ¥¸¦ À§ÇØ À¯ÀúÀÌ¸§À» ´ã¾Æ³õÀ½. ¼­¹ö¿¡¼­ ¹Ş¾Æ¿Í¾ß ÇÔ.
+
+		selected = (String) JOptionPane.showInputDialog(null, "´©±¸ÀÇ Á÷¾÷ÀÌ ±Ã±İÇÏ½Å°¡¿ä?", "POLICE", JOptionPane.QUESTION_MESSAGE,
 				null, selections, "user1");
+		// null¿¡´Â ÀÌ ÆË¾÷À» ¶ç¿ï paneÀÇ ÀÌ¸§À» Àû´Â´Ù.
 		return selected;
 	}
 
@@ -159,10 +273,11 @@ public class Send_socket implements Runnable {
 		String protect = null;
 		String[] selections = line.split(",");
 		for (int i = 0; i < selections.length; i++)
-			System.out.println(selections[i]);//ìœ ì € ì´ë¦„ ì €ì¥ ë³€ìˆ˜
+			System.out.println(selections[i]);// ÅõÇ¥¸¦ À§ÇØ À¯ÀúÀÌ¸§À» ´ã¾Æ³õÀ½. ¼­¹ö¿¡¼­ ¹Ş¾Æ¿Í¾ß ÇÔ.
 
-		protect = (String) JOptionPane.showInputDialog(null, "ëˆ„êµ¬ë¥¼ ë³´í˜¸í• ê¹Œ...", "protect", JOptionPane.QUESTION_MESSAGE,
+		protect = (String) JOptionPane.showInputDialog(null, "´©±¸¸¦ ÁöÅ°½Ç °Ç°¡¿ä?", "DOCTOR", JOptionPane.QUESTION_MESSAGE,
 				null, selections, "user1");
+		// null¿¡´Â ÀÌ ÆË¾÷À» ¶ç¿ï paneÀÇ ÀÌ¸§À» Àû´Â´Ù.
 		return protect;
 	}
 
@@ -172,5 +287,6 @@ public class Send_socket implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return;
 	}
 }
