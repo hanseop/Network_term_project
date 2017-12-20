@@ -30,6 +30,9 @@ public class RoomGUI implements Runnable {
 	Image changedImage = newImage.getScaledInstance(790, 600, Image.SCALE_SMOOTH);
 	ImageIcon newRoom = new ImageIcon(changedImage);
 	
+	/*
+	 * JPanel value panel set background room image for RoomGUI class
+	 */
 	JPanel panel = new JPanel() {
 		public void paintComponent(Graphics g) {
 			g.drawImage(newRoom.getImage(), 0, 0, null);
@@ -51,7 +54,7 @@ public class RoomGUI implements Runnable {
 		ImageIcon key7 = new ImageIcon("scroll_dot.png");
 		ImageIcon key8 = new ImageIcon("scroll_dot.png");
 		ImageIcon key9 = new ImageIcon("scroll_dot.png");
-
+		
 		this.setObject(key0, 580, 250);
 		this.setObject(key1, 230, 350);
 		this.setObject(key2, 420, 410);
@@ -63,8 +66,12 @@ public class RoomGUI implements Runnable {
 		this.setObject(key8, (int) (Math.random() * 450) + 200, (int) (Math.random() * 50) + 500);
 		this.setObject(key9, (int) (Math.random() * 380) + 300, (int) (Math.random() + 20) + 150);
 		
-		JButton job = new JButton(job_butt);
-		JButton story = new JButton(story_butt);
+		JButton job = new JButton(job_butt); // job button to describe each user's role
+		JButton story = new JButton(story_butt); // story button to describe the game story
+		/*
+		 * below this line remove button's outline to visualize it better
+		 * 
+		 */
 		job.setBorderPainted(false);
 		story.setBorderPainted(false);
 		job.getPreferredSize();
@@ -78,12 +85,12 @@ public class RoomGUI implements Runnable {
 		
 	}
 	/*
-	 * method setObject initalize object's random location
+	 * method setObject initalize object's location
 	 */
 	public void setObject(ImageIcon object, int x, int y) {
 
 		panel.setLayout(null);
-		button[index] = new JButton(object);
+		button[index] = new JButton(object); // initialize button array
 
 		Dimension size = button[0].getPreferredSize();
 		button[index].setBackground(Color.red);

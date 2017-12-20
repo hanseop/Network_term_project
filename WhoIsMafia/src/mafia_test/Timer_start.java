@@ -22,24 +22,20 @@ class SecondThread extends Thread
 		this.myLabel = myLabel;
 		monitorObj = _monitorObj;
 	}
-
-	public void setOffStopMe(boolean flag)
-
-	{
-		stopMe = flag;
-	}
-
-	public void run()
+	/*
+	 * method run decrease y value 1 after 1 second elapsed
+	 */
+	public void run() 
 
 	{
 		while (true)
 
 		{
 
-			myLabel.setText("" + y);
+			myLabel.setText("" + y); // add y value to label to show how much time left for discussion
 			try {
 
-				Thread.sleep(1000);
+				Thread.sleep(1000); // make thread sleep till 1 second
 
 			} catch (InterruptedException e) {
 
@@ -55,29 +51,25 @@ class SecondThread extends Thread
 
 					} catch (InterruptedException e) {
 
-						// TODO Auto-generated catch block
+						
 						e.printStackTrace();
 					}
 				}
 			}
-			if (y == -1) {
-				Send_socket.out.println("/timeout");
-				this.interrupt();
+			if (y == -1) { // if timer becomes 0 second client socket send to server timeout protocol
+				Send_socket.out.println("/timeout"); // sending message to server
+				this.interrupt(); //interrupt thread
 				break;
 				
 			}
 		}
 		
 	}
-	public int getTime()
-	{
-		return y;
-	}
 }
 /*
  * GUI for timer
  */
-public class Timer_start extends JFrame implements ActionListener, Runnable {
+public class Timer_start extends JFrame implements Runnable {
 
 	static JLabel timerLabel = null;
 	JLabel secondLabel = null;
@@ -88,24 +80,21 @@ public class Timer_start extends JFrame implements ActionListener, Runnable {
 	public void TimerStart()
 
 	{
-		this.setTitle("Timer Test");
-		Container c = this.getContentPane();
+		this.setTitle("Timer Test"); // title for timer frame
+		
+		
+		
+		Container c = this.getContentPane(); // frame for timer
 		c.setLayout(new FlowLayout());
-		secondLabel = new JLabel("0");
+		secondLabel = new JLabel("0"); // timer label
 		secondLabel.setFont(new Font("Gothic", Font.ITALIC, 80));
-		// stopbutton = new JButton("Stop");
-		// stopbutton.addActionListener(this);
-
 		c.add(secondLabel);
-		// c.add(stopbutton);
-
 		this.setSize(300, 150);
 		this.setVisible(true);
-
+		
 		secondThread = new SecondThread(secondLabel,monitorObj);
 		secondThread.start();
-		
-		while(!secondThread.interrupted()){
+		while(!secondThread.interrupted()){ // interrupt timer thread when the time becomes 0 and close timer Frame
 			if(secondThread.getTime() == -1)
 				break;
 		}
@@ -113,25 +102,7 @@ public class Timer_start extends JFrame implements ActionListener, Runnable {
 	}
 
 	public void run() {
-		this.TimerStart();
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		JButton btn = (JButton) e.getSource();
-		if (btn.getText().equals("Stop"))
-
-		{
-			stopbutton.setText("Resume");
-			secondThread.setOffStopMe(true);
-		} else {
-			synchronized (monitorObj) {
-				monitorObj.notify();
-			}
-			stopbutton.setText("Stop");
-			secondThread.setOffStopMe(false);
-
-		}
+		this.TimerStart(); // thread for timer
 	}
 
 }
