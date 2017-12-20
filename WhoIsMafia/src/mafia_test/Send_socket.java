@@ -13,7 +13,12 @@ import java.lang.Object;
 
 import javax.swing.*;
 import java.util.*;
-
+/*
+ * Class send socket send/receive protocol with server.
+ * It first gets Server IP address and user nickname and wait for
+ * 7 users to come to mafia game.
+ * There are various protocol ->protocol for mafia, police, doctor, citizens ...
+ */
 public class Send_socket implements Runnable {
 	private static int matrixSize = 7;
 	static BufferedReader in;
@@ -35,7 +40,9 @@ public class Send_socket implements Runnable {
 			g.drawImage(newFlat.getImage(), 18, 18, null);
 		}
 	};
-
+	/*
+	 * initalize message area and textfield
+	 */
 	public Send_socket() {
 		messageArea.setEditable(false);
 		textField.setEditable(false);
@@ -54,17 +61,21 @@ public class Send_socket implements Runnable {
 			}
 		});
 	}
-
+	/*
+	 * get server's address
+	 */
 	 private String getServerAddress() {
 	      return JOptionPane.showInputDialog(frame, "서버의 IP주소를 입력해주세요:", "Who is the mafia", JOptionPane.PLAIN_MESSAGE);
 	   }
 
-	   /* 게임에서 사용할 이름을 입력받음 */
+	   /* get users nickname */
 	   private String getsName() {
 	      return JOptionPane.showInputDialog(frame, "게임에서 사용할 닉네임을 입력해주세요:", "Who is the mafia",
 	            JOptionPane.PLAIN_MESSAGE);
 	   }
-
+	   /*
+	    * runChat method send and gets reply with server with various protocol
+	    */
 	   void runChat(String[] players, int page) throws IOException {
 	      // Make connection and initialize streams
 
@@ -78,11 +89,11 @@ public class Send_socket implements Runnable {
 
 	      while (true) {
 	         String line = in.readLine();
-	         if (line.startsWith("SUBMITNAME")) {
+	         if (line.startsWith("SUBMITNAME")) { // get user's nickname
 	            out.println(getsName());
-	         } else if (line.startsWith("NAMEACCEPTED")) {
+	         } else if (line.startsWith("NAMEACCEPTED")) { // if server accept the username
 	            textField.setEditable(true);
-	         } else if (line.startsWith("MESSAGE")) {
+	         } else if (line.startsWith("MESSAGE")) { // if client get message protocol the message is for chatting
 	            // if (line.substring(8).equals("game start"))
 	            messageArea.append(line.substring(8) + "\n");
 	         } else if (line.startsWith("ERROR")) {
@@ -100,51 +111,47 @@ public class Send_socket implements Runnable {
 	            textField.setVisible(false);
 	            socket.close();
 	         }
-	         // if(서버가 5분이 되었다고 알려주면)
+	         // if server tells that 5minutes has elapsed
 
-	         // out.println("vote"+vote(players)); //-> players는 유저이름이 담긴 스트링 배열
-	         else if (line.startsWith("JOB")) {
+	         
+	         else if (line.startsWith("JOB")) { // when police turn -> when job protocol is received police can know user's job
 	            line = line.substring(3);
 	            String selected = police(line);
-	            System.out.println("police" + selected);
-	            out.println("/is_he_mafia?" + selected);
-	         } else if (line.startsWith("IS_MAFIA?")) {
+	            out.println("/is_he_mafia?" + selected); // Send server is_MAFIA protocol to know user's job
+	         } else if (line.startsWith("IS_MAFIA?")) { // server tells user's role to police
 	            messageArea.append(line.substring(9) + "\n");
 	            out.println("/kill");
-	         } else if (line.startsWith("NON")) {
+	         } else if (line.startsWith("NON")) { // when police is dead
 	            out.println("/kill");
-	         } else if (line.startsWith("VOTENAME ")) {// 테스트를 위해 돌아가는 부분
+	         } else if (line.startsWith("VOTENAME ")) { // When server indicates to user to vote
 	            if (is_kicked == false) {
 	               line = line.substring(9);
 	               String victim = vote(line);
-	               System.out.println(victim);
-	               out.println("/victim" + victim);
+	               out.println("/victim" + victim); // send the selected user
 	            }
-	         } else if (line.startsWith("KILL")) {
+	         } else if (line.startsWith("KILL")) { // the user that mafia wants to kill
 	            line = line.substring(4);
 	            String victim = mafia(line);
-	            System.out.println(victim);
 	            out.println("/dead" + victim);
-	         } else if (line.startsWith("DEAD")) {
+	         } else if (line.startsWith("DEAD")) { // broadcast dead user
 	            messageArea.append(line.substring(4) + "\n");
-	         } else if (line.startsWith("DOCTOR")) {
+	         } else if (line.startsWith("DOCTOR")) { // server tells doctor to choose user to save
 	            line = line.substring(6);
 	            String protect = doctor(line);
-	            System.out.println(protect);
-	            out.println("/protect" + protect);
-	         } else if (line.startsWith("D_START")) {
-	            for (int i = 0; i < RoomGUI.index; i++)
+	            out.println("/protect" + protect); // send the user doctor wants to save 
+	         } else if (line.startsWith("D_START")) { // server tells user that day has started
+	            for (int i = 0; i < RoomGUI.index; i++) // when night comes make user cannot click objects 
 	               RoomGUI.button[i].setEnabled(true);
-	            if (is_kicked == false)
+	            if (is_kicked == false) // chatting area only available for alive users
 	               textField.setVisible(true);
 	            messageArea.append("*******[SYSTEM MESSAGE]*******\n");
 	            messageArea.append("아침이 밝았습니다." + "\n");
 	            messageArea.append("******************************\n");
 	            messageArea.append(line.substring(7) + "\n");
-	         } else if (line.startsWith("T_START")) {
+	         } else if (line.startsWith("T_START")) { // server tells users to start timer
 	            for (int i = 0; i < RoomGUI.index; i++)
 	               RoomGUI.button[i].setEnabled(false);
-	            if (line.indexOf("all object selected") != -1) {
+	            if (line.indexOf("all object selected") != -1) { // case when all objects are selected
 	               messageArea.append("*******[SYSTEM MESSAGE]*******\n");
 	               messageArea.append("충분한 조사가 이루어졌습니다." + "\n");
 	               messageArea.append("밤이 되기 전에 사람들과 의논하여 마피아를 추려내세요." + "\n");
@@ -152,7 +159,7 @@ public class Send_socket implements Runnable {
 	            }
 	            Thread t3 = new Thread(new Timer_start());
 	            t3.start();
-	         } else if (line.startsWith("V_END")) {
+	         } else if (line.startsWith("V_END")) { // server tells that vote is end
 	            messageArea.append(line.substring(5) + "\n\n");
 	            messageArea.append("*******[SYSTEM MESSAGE]*******\n");
 	            messageArea.append("한밤중이 되었습니다." + "\n");
@@ -160,29 +167,28 @@ public class Send_socket implements Runnable {
 	            messageArea.append("******************************\n");
 	            textField.setVisible(false);
 	            out.println("/police");
-	         } else if (line.startsWith("object_description")) {
+	         } else if (line.startsWith("object_description")) { // server tells user the information about object 
 	            line = line.substring(18);
-	            System.out.println(line);
-	            if (line.startsWith("room1,")) {
+	            if (line.startsWith("room1,")) { // information about room1
 	               String[] divide = line.split(",");
 	               line = "";
 	               for (int i = 0; i < divide.length; i++) {
 	                  line += divide[i] + "\n";
 	               }
-	            } else if (line.startsWith("room2,")) {
+	            } else if (line.startsWith("room2,")) { // information about room2
 	               String[] divide = line.split(",");
 	               line = "";
 	               for (int i = 0; i < divide.length; i++) {
 	                  line += divide[i] + "\n";
 	               }
-	            } else if (line.startsWith("foot size,")) {
+	            } else if (line.startsWith("foot size,")) { // information about footsize
 	               String[] divide = line.split(",");
 	               line = "";
 	               for (int i = 0; i < divide.length; i++) {
 	                  line += divide[i] + "\n";
 	               }
 
-	            } else if (line.startsWith("mafia foot size,")) {
+	            } else if (line.startsWith("mafia foot size,")) { // information about mafia foot size
 	               String[] divide = line.split(",");
 	               line = "";
 	               for (int i = 0; i < divide.length; i++) {
@@ -190,11 +196,11 @@ public class Send_socket implements Runnable {
 	               }
 	            }
 	            JOptionPane.showMessageDialog(actionFrame, line, "CLUE", JOptionPane.PLAIN_MESSAGE);
-	         } else if (line.startsWith("FOUND")) {
+	         } else if (line.startsWith("FOUND")) { // case when user found usful information tells next user to choose object
 	            String first = line.substring(5, line.indexOf(","));
 	            line = line.substring(line.indexOf(",") + 1);
 	            String last = line;
-	            if (last.equals("everyone_select")) {
+	            if (last.equals("everyone_select")) { // case when every users selected object
 	               messageArea.append("*******[SYSTEM MESSAGE]*******\n");
 	               messageArea.append(first + "(이)가 단서를 발견했습니다." + "\n");
 	            } else {
@@ -202,7 +208,7 @@ public class Send_socket implements Runnable {
 	               messageArea.append(first + "(이)가 단서를 발견했습니다." + "\n");
 	               messageArea.append(last + "(이)가 수색할 차례입니다." + "\n");
 	            }
-	         } else if (line.startsWith("CLUEFINDER")) {
+	         } else if (line.startsWith("CLUEFINDER")) { // server tells which user to select object
 	            String first = line.substring(10, line.indexOf(","));
 	            line = line.substring(line.indexOf(",") + 1);
 	            String middle = line.substring(0, line.indexOf(","));
@@ -211,7 +217,7 @@ public class Send_socket implements Runnable {
 	            messageArea.append("*******[SYSTEM MESSAGE]*******\n");
 	            messageArea.append(first + ", " + middle + ", " + last + "(이)가 선택 되었습니다.\n");
 	            messageArea.append(first + "(이)가 수색할 차례입니다.\n");
-	         } else if (line.startsWith("SHOW_JOB")) {
+	         } else if (line.startsWith("SHOW_JOB")) { // case when user clicked job button
 	            line = line.substring(8);
 	            line = line.substring(0, line.indexOf(" ")) + "\n" + line.substring(line.indexOf(" ") + 1);
 
@@ -227,7 +233,7 @@ public class Send_socket implements Runnable {
 	            JOptionPane.showMessageDialog(actionFrame, line, "Job", JOptionPane.PLAIN_MESSAGE);
 	         }
 
-	         else if (line.startsWith("SHOW_STORY")) {
+	         else if (line.startsWith("SHOW_STORY")) { // case when user clicked story button
 	            line = line.substring(10);
 	            String[] selections = line.split(",");
 	            String total = "";
@@ -260,10 +266,10 @@ public class Send_socket implements Runnable {
 	               else
 	                  total += selections[i] + "\n";
 	            }
-	            JOptionPane.showMessageDialog(actionFrame, total, "Story", JOptionPane.PLAIN_MESSAGE);
-	         } else if (line.startsWith("KICKED")) {
+	            JOptionPane.showMessageDialog(actionFrame, total, "Story", JOptionPane.PLAIN_MESSAGE); // pop up GUI frame
+	         } else if (line.startsWith("KICKED")) { // case when user is kicked (mafia murder or vote...)
 	            line = line.substring(6);
-	            String[] divide = line.split(",");
+	            String[] divide = line.split(","); // tell kicked user about other user's information (nickname, job ...)
 	            for (int i = 0; i < divide.length; i += 2) {
 	               if (i == 0)
 	                  line = divide[i] + "\n" + divide[i + 1].substring(0,divide[i + 1].indexOf(" ")) + "\n\n";
@@ -274,7 +280,7 @@ public class Send_socket implements Runnable {
 	            textField.setVisible(false);
 	            is_kicked = true;
 	         }
-	         messageArea.setCaretPosition(messageArea.getDocument().getLength());
+	         messageArea.setCaretPosition(messageArea.getDocument().getLength()); // scroll down to current chatting
 	      }
 
 	   }
@@ -282,8 +288,6 @@ public class Send_socket implements Runnable {
 	   public String vote(String line) {
 	      String candidate = null;
 	      String[] selections = line.split(",");
-	      for (int i = 0; i < selections.length; i++)
-	         System.out.println(selections[i]);
 
 	      candidate = (String) JOptionPane.showInputDialog(null, "누가 마피아일까...", "VOTE", JOptionPane.QUESTION_MESSAGE,
 	            null, selections, "user1");
@@ -294,36 +298,30 @@ public class Send_socket implements Runnable {
 	   public String mafia(String line) {
 	      String candidate = null;
 	      String[] selections = line.split(",");
-	      for (int i = 0; i < selections.length; i++)
-	         System.out.println(selections[i]);
 
 	      candidate = (String) JOptionPane.showInputDialog(null, "누구를 죽일까...", "MAFIA", JOptionPane.QUESTION_MESSAGE,
 	            null, selections, "user1");
-	      // null에는 이 팝업을 띄울 pane의 이름을 적는다.
-	      return candidate; // ->candidate를 리턴함.
+	     
+	      return candidate; 
 	   }
 
 	   public String police(String line) {
 	      String selected = null;
 	      String[] selections = line.split(",");
-	      for (int i = 0; i < selections.length; i++)
-	         System.out.println(selections[i]);// 투표를 위해 유저이름을 담아놓음.
 
 	      selected = (String) JOptionPane.showInputDialog(null, "누구의 직업을 수사할까....", "POLICE",
 	            JOptionPane.QUESTION_MESSAGE, null, selections, "user1");
-	      // null에는 이 팝업을 띄울 pane의 이름을 적는다.
+	      
 	      return selected;
 	   }
 
 	   public String doctor(String line) {
 	      String protect = null;
 	      String[] selections = line.split(",");
-	      for (int i = 0; i < selections.length; i++)
-	         System.out.println(selections[i]);// 투표를 위해 유저이름을 담아놓음.
 
 	      protect = (String) JOptionPane.showInputDialog(null, "누구를 지킬까....", "DOCTOR", JOptionPane.QUESTION_MESSAGE,
 	            null, selections, "user1");
-	      // null에는 이 팝업을 띄울 pane의 이름을 적는다.
+	      
 	      return protect;
 	   }
 

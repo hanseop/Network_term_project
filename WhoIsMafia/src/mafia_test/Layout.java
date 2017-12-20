@@ -15,7 +15,12 @@ import java.net.UnknownHostException;
 
 import javax.swing.*;
 import java.util.*;
-
+/****************************************************************************
+ * The Layout class is a gui class that shows opening page for users
+ * if user click start button it shows game screen and gets server's ip address 
+ * and user name
+ * **************************************************************************/
+ 
 public class Layout extends JFrame {
 	// JTextField textField = new JTextField(80);
 	// JTextArea messageArea = new JTextArea(16, 80);

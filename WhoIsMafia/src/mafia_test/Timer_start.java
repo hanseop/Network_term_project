@@ -4,7 +4,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-
+/**************************************************************
+ * Class timer indicates user that they have 5minutes to chat each other
+ * timer class tells time to user with a seperate frame with JLabel
+ * if the timer is finished it sends protocol to server that timeout happened
+ **************************************************************/
 class SecondThread extends Thread
 
 {
@@ -70,7 +74,9 @@ class SecondThread extends Thread
 		return y;
 	}
 }
-
+/*
+ * GUI for timer
+ */
 public class Timer_start extends JFrame implements ActionListener, Runnable {
 
 	static JLabel timerLabel = null;
@@ -100,7 +106,6 @@ public class Timer_start extends JFrame implements ActionListener, Runnable {
 		secondThread.start();
 		
 		while(!secondThread.interrupted()){
-			System.out.println(secondThread.getTime());
 			if(secondThread.getTime() == -1)
 				break;
 		}

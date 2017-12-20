@@ -11,7 +11,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.lang.Object;
-
+/**********************************************************************************
+ * The RoomGUI class shows the map of room that users play mafia game and also there are
+ * textfield and textmessageArea that users can chatt each other.
+ * There is a one big room map and in random area there are object button that users can click
+ * if the users click object user send protocol to server and server replies object message to user
+ * also there are job and story button that describe the mafia game
+ **********************************************************************************/
 public class RoomGUI implements Runnable {
 	static JButton[] button = new JButton[50];
 	static int index = 0;
@@ -29,7 +35,9 @@ public class RoomGUI implements Runnable {
 			g.drawImage(newRoom.getImage(), 0, 0, null);
 		}
 	};
-
+	/*
+	 * method runGUI gets imageicon value of object image
+	 */
 	public void runGUI() {
 		frame.setBounds(0, 0, 1400, 800);
 		frame.getContentPane().add(panel);
@@ -69,12 +77,12 @@ public class RoomGUI implements Runnable {
 		story.addActionListener(new storyHandler());
 		
 	}
-
+	/*
+	 * method setObject initalize object's random location
+	 */
 	public void setObject(ImageIcon object, int x, int y) {
 
 		panel.setLayout(null);
-		// Insets insets = panel.getInsets();
-		// System.out.println(ran1 +" " + ran2);
 		button[index] = new JButton(object);
 
 		Dimension size = button[0].getPreferredSize();
@@ -94,6 +102,9 @@ public class RoomGUI implements Runnable {
 		index++;
 	}
 
+	/*
+	 * handler for object button
+	 */
 	private class TheHandler implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			for (int i = 0; i < 50; i++) {
@@ -102,13 +113,17 @@ public class RoomGUI implements Runnable {
 			}
 		}
 	}
-
+	/*
+	 * handler for job button
+	 */
 	private class Handler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			Send_socket.out.println("/job");
 		}
 	}
-
+	/*
+	 * handler for story button
+	 */
 	private class storyHandler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			Send_socket.out.println("/story");
