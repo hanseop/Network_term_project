@@ -1,14 +1,15 @@
-/*opening*/
-package mafia_test;
+package net_hw2;
 
 import java.awt.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -21,7 +22,8 @@ public class Layout extends JFrame {
 	Container frm;
 	RoomGUI gui = new RoomGUI();
 	JFrame frame = new JFrame();
-
+	//BGM _music = new BGM("requiem.wav");
+	
 	public Layout() {
 		setTitle("who is the MAFIA");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,41 +31,35 @@ public class Layout extends JFrame {
 
 		frm = new JFrame("who is the MAFIA");
 
-		frm.setBounds(0, 0, 1200, 900);
+		frm.setBounds(0, 0, 1400, 800);
 		ImageIcon start_btt = new ImageIcon("start_button.png");
 		ImageIcon start_btt_p = new ImageIcon("start_button_pressed.png");
-
 		JLabel imageLabel = new JLabel(background);
-		imageLabel.setBounds(0, 0, 1200, 900);
+		imageLabel.setBounds(0, 0, 1400, 800);
 		frm.add(imageLabel);
 
 		JLabel btt_L = new JLabel();
 		JButton strt_btt = new JButton(start_btt);
 		strt_btt.setRolloverIcon(start_btt_p);
-		strt_btt.setPressedIcon(start_btt_p);// ≥÷æÓµµ µ«∞Ì æ» ≥÷æÓµµ µ 
+		strt_btt.setPressedIcon(start_btt_p);// ÎÑ£Ïñ¥ÎèÑ ÎêòÍ≥† Ïïà ÎÑ£Ïñ¥ÎèÑ Îê®
 		strt_btt.setSize(150, 90);
 		strt_btt.setBorderPainted(false);
-		strt_btt.setBounds(535, 455, 150, 90);
+		strt_btt.setBounds(625, 480, 150, 90);
 		btt_L.add(strt_btt);
 		strt_btt.addActionListener(new press_start());
 		frm.add(btt_L);
-
-		frm.setSize(1200, 900);
+		//_music.Play();
+		frm.setSize(1400, 800);
 		frm.setVisible(true);
 	}
 
 	private class press_start implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			frm.setVisible(false);
-			Thread t1 = new Thread(new RoomGUI());
+			//Thread t1 = new Thread(new RoomGUI());
 			Thread t2 = new Thread(new Send_socket());
-			t1.start();
-			if (t2.getState() == Thread.State.NEW)
-				t2.start();
-			else {
-				Thread t = new Thread(new Send_socket());
-				t.start();
-			}
+			//t1.start();
+			t2.start();
 		}
 	}
 
